@@ -53,6 +53,11 @@ ruby<<<'print("\x20")'
 {echo,-e,'\x20'}
 
 {base64,-d}<<<IAo=
+
+{echo,IAo=}|{base64,-d}
+
+{xxd,-r,-p}<<<"2020"
+
 ```
 
 ### radare pwn pattern (debruijn sequence)
