@@ -56,8 +56,13 @@ ruby<<<'print("\x20")'
 
 {echo,IAo=}|{base64,-d}
 
-{xxd,-r,-p}<<<"2020"
+{xxd,-r,-p}<<<20
 
+# $'\x20' will be interpreted as ' '
+# <<< handles the string right of it, as a filestream
+# zsh allows streaming, without program execution
+zsh<<<"<<<$'\x20'>/dev/stdout"
+zsh<<<"<<<$'\x20'>/proc/self/fd/1"
 ```
 
 ### radare pwn pattern (debruijn sequence)
