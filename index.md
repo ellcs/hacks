@@ -12,6 +12,16 @@ function ia-save() {
 ia-save 'https://gist.github.com/atomotic/721aefe8c72ac095cb6e'
 ```
 
+### qemu snapshotting
+
+
+```
+# https://web.archive.org/web/20210323214342/https://documentation.suse.com/sles/12-SP4/html/SLES-all/cha-qemu-monitor.html#sec-qemu-monitor-snapshots
+savevm NAME
+loadvm NAME
+delvm
+info snapshots 
+```
 
 ### qemu vm for windows
 
