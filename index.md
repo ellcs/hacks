@@ -56,6 +56,9 @@ EOF
 
 # start vm
 bash run.sh
+
+# connect via vncviewer
+vncviewer :1
 ```
 
 
