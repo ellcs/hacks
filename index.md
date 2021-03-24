@@ -12,6 +12,12 @@ function ia-save() {
 ia-save 'https://gist.github.com/atomotic/721aefe8c72ac095cb6e'
 ```
 
+### ssh with old algos
+
+```
+ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 123.123.123.123
+```
+
 ### qemu snapshotting
 
 
