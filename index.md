@@ -96,6 +96,10 @@ ruby<<<'print("\x20")'
 # zsh allows streaming, without program execution
 zsh<<<"<<<$'\x20'>/dev/stdout"
 zsh<<<"<<<$'\x20'>/proc/self/fd/1"
+
+# use hex and octal
+cat<<<$'\x20'
+cat<<<$'\040'
 ```
 
 ### radare pwn pattern (debruijn sequence)
