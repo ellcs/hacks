@@ -251,7 +251,7 @@ cat /proc/self/fd/4 4<<<"asdfasdf"
 ### laggy tigervnc session
 
 ```bash
-vncviewer -CompressLevel 9 -via ellcs@hostname :1
+vncviewer -Shared -CompressLevel 9 -via ellcs@hostname :1
 ```
 
 ### delete all lines where 'pry' occurs
