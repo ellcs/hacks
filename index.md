@@ -106,13 +106,23 @@ ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 123.123.123.123
 
 ### qemu snapshotting
 
+https://web.archive.org/web/20210323214342/https://documentation.suse.com/sles/12-SP4/html/SLES-all/cha-qemu-monitor.html#sec-qemu-monitor-snapshots
+
+With running vm:
 
 ```
-# https://web.archive.org/web/20210323214342/https://documentation.suse.com/sles/12-SP4/html/SLES-all/cha-qemu-monitor.html#sec-qemu-monitor-snapshots
 savevm NAME
 loadvm NAME
 delvm
 info snapshots 
+```
+
+From bash:
+
+```
+qemu-img snapshot -l $img
+qemu-img snapshot -c $snapshot_name $img
+qemu-img snapshot -d $snapshot_name $img
 ```
 
 ### qemu vm for windows
