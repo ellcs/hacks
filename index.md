@@ -1,3 +1,21 @@
+
+### mount without root permissions
+
+https://web.archive.org/web/20210428082118/https://unix.stackexchange.com/questions/32008/how-to-mount-an-image-file-without-root-permission
+```shell
+# create mount target
+mkdir mnt   
+
+# try automount, fails if multiple partitions
+guestmount -a image.iso -r -i mnt
+
+# mount partition explicit (sda1 is not a real device)
+guestmount -a wds_231.iso -r -m /dev/sda1 --ro mnt
+
+# unmount the guestmount (Not shown in lsblk!)
+guestunmount mnt
+```
+
 ### ruby base64 grepper
 
 ```ruby
