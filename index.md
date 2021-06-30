@@ -1,5 +1,9 @@
+### mount image file via loop device
 
-### mount without root permissions
+https://web.archive.org/web/20210630122026/https://superuser.com/questions/344899/how-can-i-mount-a-disk-image
+
+
+### mount image file without root permissions
 
 https://web.archive.org/web/20210428082118/https://unix.stackexchange.com/questions/32008/how-to-mount-an-image-file-without-root-permission
 ```shell
