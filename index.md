@@ -1,3 +1,18 @@
+### ruby - highorder methods with arguments
+
+```ruby
+def with_args(sym, *args)
+  Proc.new do |item|
+    item.send(sym, *args)
+  end
+end
+
+
+[1,2,3,4].map(&with_args(:+, 2))
+# => [3, 4, 5, 6]
+```
+
+
 ### mount image file via loop device
 
 https://web.archive.org/web/20210630122026/https://superuser.com/questions/344899/how-can-i-mount-a-disk-image
