@@ -16,13 +16,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Install mdbook
-      run: |
-        sudo apt update
-        sudo apt install snapd
-        sudo snap install mdbook
-    - name: Install mdbook
-      run: mdbook build
+    - name: Setup mdBook
+      uses: peaceiris/actions-mdbook@v1
+      with:
+        mdbook-version: '0.4.10'
+        # mdbook-version: 'latest'
+    - run: mdbook build
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
