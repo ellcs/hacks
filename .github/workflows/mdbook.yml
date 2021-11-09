@@ -18,6 +18,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install mdbook
       run: cargo install mdbook --verbose
+    - name: Install mdbook
+      run: mdbook build
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
