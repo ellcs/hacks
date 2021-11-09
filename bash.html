@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Old Stuff - </title>
+        <title>Bash - </title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -63,7 +63,7 @@
         </script>
 
         <div id="sidebar" class="sidebar">
-            <ul class="chapter"><li><a href="./old_stuff.html" class="active"><strong>1.</strong> Old Stuff</a></li><li><a href="bash.html"><strong>2.</strong> Bash</a></li><li><a href="git.html"><strong>3.</strong> Git</a></li><li><a href="pwn.html"><strong>4.</strong> pwn</a></li><li><a href="qemu.html"><strong>5.</strong> qemu</a></li><li><a href="ruby.html"><strong>6.</strong> Ruby</a></li></ul>
+            <ul class="chapter"><li><a href="./old_stuff.html"><strong>1.</strong> Old Stuff</a></li><li><a href="bash.html" class="active"><strong>2.</strong> Bash</a></li><li><a href="git.html"><strong>3.</strong> Git</a></li><li><a href="pwn.html"><strong>4.</strong> pwn</a></li><li><a href="qemu.html"><strong>5.</strong> qemu</a></li><li><a href="ruby.html"><strong>6.</strong> Ruby</a></li></ul>
         </div>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -86,76 +86,33 @@
                 </div>
 
                 <div id="content" class="content">
-                    <a class="header" href="./old_stuff.html#old-stuff" id="old-stuff"><h1>Old stuff</h1></a>
-<a class="header" href="./old_stuff.html#mount-image-file-via-loop-device" id="mount-image-file-via-loop-device"><h3>mount image file via loop device</h3></a>
-<p>https://web.archive.org/web/20210630122026/https://superuser.com/questions/344899/how-can-i-mount-a-disk-image</p>
-<a class="header" href="./old_stuff.html#mount-image-file-without-root-permissions" id="mount-image-file-without-root-permissions"><h3>mount image file without root permissions</h3></a>
-<p>https://web.archive.org/web/20210428082118/https://unix.stackexchange.com/questions/32008/how-to-mount-an-image-file-without-root-permission</p>
-<pre><code class="language-shell"># create mount target
-mkdir mnt   
+                    <a class="header" href="bash.html#bash-function-to-archive-a-page-with-waybackmachine" id="bash-function-to-archive-a-page-with-waybackmachine"><h3>bash function to archive a page with waybackmachine</h3></a>
+<pre><code class="language-bash"># https://web.archive.org/web/20210323214943/https://gist.github.com/atomotic/721aefe8c72ac095cb6e
+function ia-save() {
+  curl -s -I &quot;https://web.archive.org/save/$1&quot; | \
+  egrep '^location:' | \
+  awk '{ print $2 }';
+}
 
-# try automount, fails if multiple partitions
-guestmount -a image.iso -r -i mnt
-
-# mount partition explicit (sda1 is not a real device)
-guestmount -a wds_231.iso -r -m /dev/sda1 --ro mnt
-
-# unmount the guestmount (Not shown in lsblk!)
-guestunmount mnt
+# Usage:
+ia-save 'https://gist.github.com/atomotic/721aefe8c72ac095cb6e'
 </code></pre>
-<a class="header" href="./old_stuff.html#ssh-with-old-algos" id="ssh-with-old-algos"><h3>ssh with old algos</h3></a>
-<pre><code>ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 123.123.123.123
-</code></pre>
-<a class="header" href="./old_stuff.html#print-space-without-a-space" id="print-space-without-a-space"><h3>print space without a space</h3></a>
-<pre><code class="language-bash">python&lt;&lt;&lt;'print(&quot;\x20&quot;)'
-
-ruby&lt;&lt;&lt;'print(&quot;\x20&quot;)'
-
-{echo,-e,'\x20'}
-
-{base64,-d}&lt;&lt;&lt;IAo=
-
-{echo,IAo=}|{base64,-d}
-
-{xxd,-r,-p}&lt;&lt;&lt;20
-
-# $'\x20' will be interpreted as ' '
-# &lt;&lt;&lt; handles the string right of it, as a filestream
-# zsh allows streaming, without program execution
-zsh&lt;&lt;&lt;&quot;&lt;&lt;&lt;$'\x20'&gt;/dev/stdout&quot;
-zsh&lt;&lt;&lt;&quot;&lt;&lt;&lt;$'\x20'&gt;/proc/self/fd/1&quot;
-
-# use hex and octal
-cat&lt;&lt;&lt;$'\x20'
-cat&lt;&lt;&lt;$'\040'
-</code></pre>
-<a class="header" href="./old_stuff.html#download-subtitles-with-youtube-dl" id="download-subtitles-with-youtube-dl"><h3>download subtitles with youtube-dl</h3></a>
-<pre><code class="language-bash">youtube-dl --list-subs https://www.youtube.com/watch?v=dl78PQGJpiI
-
-youtube-dl --all-subs --skip-download https://www.youtube.com/watch?v=dl78PQGJpiI
-</code></pre>
-<a class="header" href="./old_stuff.html#grep-for-base64-like-strings" id="grep-for-base64-like-strings"><h3>grep for base64 like strings</h3></a>
-<pre><code class="language-bash">grep -En '[[:alnum:]/+]{20,}' file
-</code></pre>
-<a class="header" href="./old_stuff.html#procfs--working-with-file-descriptors" id="procfs--working-with-file-descriptors"><h3>procfs &amp;&amp; working with file descriptors</h3></a>
-<pre><code class="language-bash">bash -c 'grep heap /proc/$$/maps'
-diff /proc/self/fd/3 /proc/self/fd/4 4&lt;&lt;&lt;&quot;$(xxd a)&quot; 3&lt;&lt;&lt;&quot;$(xxd b)&quot;
-cat /proc/self/fd/4 4&lt;&lt;&lt;&quot;asdfasdf&quot;
-</code></pre>
-<a class="header" href="./old_stuff.html#laggy-tigervnc-session" id="laggy-tigervnc-session"><h3>laggy tigervnc session</h3></a>
-<pre><code class="language-bash">vncviewer -Shared -CompressLevel 9 -via ellcs@hostname :1
-</code></pre>
-<a class="header" href="./old_stuff.html#git-push-local-branch-to-remote-with-same-name" id="git-push-local-branch-to-remote-with-same-name"><h3>git push local branch to remote with same name</h3></a>
-<pre><code class="language-bash">git push -u origin $(git branch | grep '*' | sed 's/* //')
+<a class="header" href="bash.html#default-parameters-in-bash" id="default-parameters-in-bash"><h3>default parameters in bash</h3></a>
+<pre><code class="language-bash"># sets x to &quot;/abc&quot; if x is not set
+x=${x:-/abc}
 </code></pre>
 
                 </div>
 
                 <!-- Mobile navigation buttons -->
                 
+                    <a rel="prev" href="./old_stuff.html" class="mobile-nav-chapters previous" title="Previous chapter">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
 
                 
-                    <a rel="next" href="bash.html" class="mobile-nav-chapters next" title="Next chapter">
+                    <a rel="next" href="git.html" class="mobile-nav-chapters next" title="Next chapter">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
@@ -163,9 +120,13 @@ cat /proc/self/fd/4 4&lt;&lt;&lt;&quot;asdfasdf&quot;
             </div>
 
             
+                <a href="./old_stuff.html" class="nav-chapters previous" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+            
 
             
-                <a href="bash.html" class="nav-chapters next" title="You can navigate through the chapters using the arrow keys">
+                <a href="git.html" class="nav-chapters next" title="You can navigate through the chapters using the arrow keys">
                     <i class="fa fa-angle-right"></i>
                 </a>
             
