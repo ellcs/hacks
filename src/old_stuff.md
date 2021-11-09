@@ -1,6 +1,6 @@
 #  Old stuff
 
-
+avoid vo
 ### mount image file via loop device
 
 https://web.archive.org/web/20210630122026/https://superuser.com/questions/344899/how-can-i-mount-a-disk-image
@@ -17,7 +17,7 @@ mkdir mnt
 guestmount -a image.iso -r -i mnt
 
 # mount partition explicit (sda1 is not a real device)
-guestmount -a wds_231.iso -r -m /dev/sda1 --ro mnt
+guestmount -a image.iso -r -m /dev/sda1 --ro mnt
 
 # unmount the guestmount (Not shown in lsblk!)
 guestunmount mnt
@@ -30,32 +30,6 @@ guestunmount mnt
 ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 123.123.123.123
 ```
 
-
-### print space without a space
-
-```bash
-python<<<'print("\x20")'
-
-ruby<<<'print("\x20")'
-
-{echo,-e,'\x20'}
-
-{base64,-d}<<<IAo=
-
-{echo,IAo=}|{base64,-d}
-
-{xxd,-r,-p}<<<20
-
-# $'\x20' will be interpreted as ' '
-# <<< handles the string right of it, as a filestream
-# zsh allows streaming, without program execution
-zsh<<<"<<<$'\x20'>/dev/stdout"
-zsh<<<"<<<$'\x20'>/proc/self/fd/1"
-
-# use hex and octal
-cat<<<$'\x20'
-cat<<<$'\040'
-```
 
 
 ### download subtitles with youtube-dl
