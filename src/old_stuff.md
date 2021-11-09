@@ -1,3 +1,5 @@
+#  Old stuff
+
 ### ruby - highorder methods with arguments
 
 ```ruby
