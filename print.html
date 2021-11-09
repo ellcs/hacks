@@ -1,95 +1,154 @@
 <!DOCTYPE HTML>
-<html lang="en">
+<html lang="en" class="sidebar-visible no-js light">
     <head>
+        <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title></title>
+                <meta name="robots" content="noindex" />
+                
+
+        <!-- Custom HTML head -->
+        
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
 
-        <base href="">
-
-        <link rel="stylesheet" href="book.css">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
-
-        <link rel="shortcut icon" href="favicon.png">
-
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
+                <link rel="icon" href="favicon.svg">
+                        <link rel="shortcut icon" href="favicon.png">
+                <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+                <link rel="stylesheet" href="css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
         <link rel="stylesheet" href="tomorrow-night.css">
         <link rel="stylesheet" href="ayu-highlight.css">
 
-        <!-- Custom theme -->
+        <!-- Custom theme stylesheets -->
         
-
-        
-
-        <!-- Fetch Clipboard.js from CDN but have a local fallback -->
-        <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.1/clipboard.min.js"></script>
-        <script>
-            if (typeof Clipboard == 'undefined') {
-                document.write(unescape("%3Cscript src='clipboard.min.js'%3E%3C/script%3E"));
-            }
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
-        <!-- Fetch JQuery from CDN but have a local fallback -->
-        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-        <script>
-            if (typeof jQuery == 'undefined') {
-                document.write(unescape("%3Cscript src='jquery.js'%3E%3C/script%3E"));
-            }
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
         </script>
 
-        <!-- Fetch store.js from local - TODO add CDN when 2.x.x is available on cdnjs -->
-        <script src="store.js"></script>
-
-    </head>
-    <body class="light">
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script type="text/javascript">
-            var theme = store.get('mdbook-theme');
-            if (theme === null || theme === undefined) { theme = 'light'; }
-            $('body').removeClass().addClass(theme);
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
         </script>
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script type="text/javascript">
-            var sidebar = store.get('mdbook-sidebar');
-            if (sidebar === "hidden") { $("html").addClass("sidebar-hidden") }
-            else if (sidebar === "visible") { $("html").addClass("sidebar-visible") }
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
-        <div id="sidebar" class="sidebar">
-            <ul class="chapter"><li><a href="./old_stuff.html"><strong>1.</strong> Old Stuff</a></li><li><a href="bash.html"><strong>2.</strong> Bash</a></li><li><a href="git.html"><strong>3.</strong> Git</a></li><li><a href="pwn.html"><strong>4.</strong> pwn</a></li><li><a href="qemu.html"><strong>5.</strong> qemu</a></li><li><a href="ruby.html"><strong>6.</strong> Ruby</a></li></ul>
-        </div>
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="old_stuff.html"><strong aria-hidden="true">1.</strong> Old Stuff</a></li><li class="chapter-item expanded "><a href="bash.html"><strong aria-hidden="true">2.</strong> Bash</a></li><li class="chapter-item expanded "><a href="git.html"><strong aria-hidden="true">3.</strong> Git</a></li><li class="chapter-item expanded "><a href="pwn.html"><strong aria-hidden="true">4.</strong> pwn</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="angr.html"><strong aria-hidden="true">4.1.</strong> Angr</a></li><li class="chapter-item expanded "><a href="z3py.html"><strong aria-hidden="true">4.2.</strong> z3</a></li></ol></li><li class="chapter-item expanded "><a href="qemu.html"><strong aria-hidden="true">5.</strong> qemu</a></li><li class="chapter-item expanded "><a href="ruby.html"><strong aria-hidden="true">6.</strong> Ruby</a></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
 
         <div id="page-wrapper" class="page-wrapper">
 
-            <div class="page" tabindex="-1">
+            <div class="page">
                 
-                <div id="menu-bar" class="menu-bar">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
-                        <i id="sidebar-toggle" class="fa fa-bars" title="Toggle sidebar"></i>
-                        <i id="theme-toggle" class="fa fa-paint-brush" title="Change theme"></i>
-                    </div>
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
 
                     <h1 class="menu-title"></h1>
 
                     <div class="right-buttons">
-                        <a href="print.html">
-                            <i id="print-button" class="fa fa-print" title="Print this book"></i>
+                                                <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
                         </a>
+                                                                        
                     </div>
                 </div>
 
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
                 <div id="content" class="content">
-                    <a class="header" href="print.html#old-stuff" id="old-stuff"><h1>Old stuff</h1></a>
-<a class="header" href="print.html#mount-image-file-via-loop-device" id="mount-image-file-via-loop-device"><h3>mount image file via loop device</h3></a>
+                    <main>
+                        <h1 id="old-stuff"><a class="header" href="#old-stuff">Old stuff</a></h1>
+<p>avoid vo</p>
+<h3 id="mount-image-file-via-loop-device"><a class="header" href="#mount-image-file-via-loop-device">mount image file via loop device</a></h3>
 <p>https://web.archive.org/web/20210630122026/https://superuser.com/questions/344899/how-can-i-mount-a-disk-image</p>
-<a class="header" href="print.html#mount-image-file-without-root-permissions" id="mount-image-file-without-root-permissions"><h3>mount image file without root permissions</h3></a>
+<h3 id="mount-image-file-without-root-permissions"><a class="header" href="#mount-image-file-without-root-permissions">mount image file without root permissions</a></h3>
 <p>https://web.archive.org/web/20210428082118/https://unix.stackexchange.com/questions/32008/how-to-mount-an-image-file-without-root-permission</p>
 <pre><code class="language-shell"># create mount target
 mkdir mnt   
@@ -98,15 +157,73 @@ mkdir mnt
 guestmount -a image.iso -r -i mnt
 
 # mount partition explicit (sda1 is not a real device)
-guestmount -a wds_231.iso -r -m /dev/sda1 --ro mnt
+guestmount -a image.iso -r -m /dev/sda1 --ro mnt
 
 # unmount the guestmount (Not shown in lsblk!)
 guestunmount mnt
 </code></pre>
-<a class="header" href="print.html#ssh-with-old-algos" id="ssh-with-old-algos"><h3>ssh with old algos</h3></a>
+<h3 id="ssh-with-old-algos"><a class="header" href="#ssh-with-old-algos">ssh with old algos</a></h3>
 <pre><code>ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 123.123.123.123
 </code></pre>
-<a class="header" href="print.html#print-space-without-a-space" id="print-space-without-a-space"><h3>print space without a space</h3></a>
+<h3 id="download-subtitles-with-youtube-dl"><a class="header" href="#download-subtitles-with-youtube-dl">download subtitles with youtube-dl</a></h3>
+<pre><code class="language-bash">youtube-dl --list-subs https://www.youtube.com/watch?v=dl78PQGJpiI
+
+youtube-dl --all-subs --skip-download https://www.youtube.com/watch?v=dl78PQGJpiI
+</code></pre>
+<h3 id="grep-for-base64-like-strings"><a class="header" href="#grep-for-base64-like-strings">grep for base64 like strings</a></h3>
+<pre><code class="language-bash">grep -En '[[:alnum:]/+]{20,}' file
+</code></pre>
+<h3 id="procfs--working-with-file-descriptors"><a class="header" href="#procfs--working-with-file-descriptors">procfs &amp;&amp; working with file descriptors</a></h3>
+<pre><code class="language-bash">bash -c 'grep heap /proc/$$/maps'
+diff /proc/self/fd/3 /proc/self/fd/4 4&lt;&lt;&lt;&quot;$(xxd a)&quot; 3&lt;&lt;&lt;&quot;$(xxd b)&quot;
+cat /proc/self/fd/4 4&lt;&lt;&lt;&quot;asdfasdf&quot;
+</code></pre>
+<h3 id="laggy-tigervnc-session"><a class="header" href="#laggy-tigervnc-session">laggy tigervnc session</a></h3>
+<pre><code class="language-bash">vncviewer -Shared -CompressLevel 9 -via ellcs@hostname :1
+</code></pre>
+<h3 id="git-push-local-branch-to-remote-with-same-name"><a class="header" href="#git-push-local-branch-to-remote-with-same-name">git push local branch to remote with same name</a></h3>
+<pre><code class="language-bash">git push -u origin $(git branch | grep '*' | sed 's/* //')
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h3 id="bash-function-to-archive-a-page-with-waybackmachine"><a class="header" href="#bash-function-to-archive-a-page-with-waybackmachine">bash function to archive a page with waybackmachine</a></h3>
+<pre><code class="language-bash"># https://web.archive.org/web/20210323214943/https://gist.github.com/atomotic/721aefe8c72ac095cb6e
+function ia-save() {
+  curl -s -I &quot;https://web.archive.org/save/$1&quot; | \
+  egrep '^location:' | \
+  awk '{ print $2 }';
+}
+
+# Usage:
+ia-save 'https://gist.github.com/atomotic/721aefe8c72ac095cb6e'
+</code></pre>
+<h3 id="default-parameters-in-bash"><a class="header" href="#default-parameters-in-bash">default parameters in bash</a></h3>
+<pre><code class="language-bash"># sets x to &quot;/abc&quot; if x is not set
+x=${x:-/abc}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h3 id="gits-freshest-branch"><a class="header" href="#gits-freshest-branch">gits freshest branch</a></h3>
+<pre><code class="language-bash"># don't foget to fetch first
+git branch --sort=-committerdate
+</code></pre>
+<h3 id="git-pretty-oneline-with-author-name"><a class="header" href="#git-pretty-oneline-with-author-name">git pretty oneline with author name</a></h3>
+<pre><code class="language-bash">git log --pretty=&quot;format:%C(Yellow)%H%Creset %Cred%aN%Creset %s&quot;
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h3 id="radare-pwn-pattern-debruijn-sequence"><a class="header" href="#radare-pwn-pattern-debruijn-sequence">radare pwn pattern (debruijn sequence)</a></h3>
+<pre><code class="language-bash"># find offset
+ragg2 -P 512 -r | ./narnia1
+
+# query 
+ragg -q 0x41414841
+</code></pre>
+<h3 id="gdb-pwndbg-raw-stdin-input"><a class="header" href="#gdb-pwndbg-raw-stdin-input">gdb (pwndbg) raw stdin input</a></h3>
+<pre><code class="language-bash"># with python3
+r &lt; &lt;(python3.9 -c 'import sys; sys.stdout.write(&quot;\x41&quot;*50)')
+
+# with python2
+r &lt; &lt;(python2.7 -c 'print(&quot;\x41&quot;*50)')
+
+# with ruby
+r &lt; &lt;(ruby -e 'print(&quot;A&quot;*50)')
+</code></pre>
+<h3 id="print-space-without-a-space"><a class="header" href="#print-space-without-a-space">print space without a space</a></h3>
 <pre><code class="language-bash">python&lt;&lt;&lt;'print(&quot;\x20&quot;)'
 
 ruby&lt;&lt;&lt;'print(&quot;\x20&quot;)'
@@ -129,65 +246,440 @@ zsh&lt;&lt;&lt;&quot;&lt;&lt;&lt;$'\x20'&gt;/proc/self/fd/1&quot;
 cat&lt;&lt;&lt;$'\x20'
 cat&lt;&lt;&lt;$'\040'
 </code></pre>
-<a class="header" href="print.html#download-subtitles-with-youtube-dl" id="download-subtitles-with-youtube-dl"><h3>download subtitles with youtube-dl</h3></a>
-<pre><code class="language-bash">youtube-dl --list-subs https://www.youtube.com/watch?v=dl78PQGJpiI
+<div style="break-before: page; page-break-before: always;"></div><h1 id="angr"><a class="header" href="#angr">Angr</a></h1>
+<p>Solve ARGV:</p>
+<pre><code class="language-python">import angr
+import claripy
+import sys
 
-youtube-dl --all-subs --skip-download https://www.youtube.com/watch?v=dl78PQGJpiI
-</code></pre>
-<a class="header" href="print.html#grep-for-base64-like-strings" id="grep-for-base64-like-strings"><h3>grep for base64 like strings</h3></a>
-<pre><code class="language-bash">grep -En '[[:alnum:]/+]{20,}' file
-</code></pre>
-<a class="header" href="print.html#procfs--working-with-file-descriptors" id="procfs--working-with-file-descriptors"><h3>procfs &amp;&amp; working with file descriptors</h3></a>
-<pre><code class="language-bash">bash -c 'grep heap /proc/$$/maps'
-diff /proc/self/fd/3 /proc/self/fd/4 4&lt;&lt;&lt;&quot;$(xxd a)&quot; 3&lt;&lt;&lt;&quot;$(xxd b)&quot;
-cat /proc/self/fd/4 4&lt;&lt;&lt;&quot;asdfasdf&quot;
-</code></pre>
-<a class="header" href="print.html#laggy-tigervnc-session" id="laggy-tigervnc-session"><h3>laggy tigervnc session</h3></a>
-<pre><code class="language-bash">vncviewer -Shared -CompressLevel 9 -via ellcs@hostname :1
-</code></pre>
-<a class="header" href="print.html#git-push-local-branch-to-remote-with-same-name" id="git-push-local-branch-to-remote-with-same-name"><h3>git push local branch to remote with same name</h3></a>
-<pre><code class="language-bash">git push -u origin $(git branch | grep '*' | sed 's/* //')
-</code></pre>
-<a class="header" href="print.html#bash-function-to-archive-a-page-with-waybackmachine" id="bash-function-to-archive-a-page-with-waybackmachine"><h3>bash function to archive a page with waybackmachine</h3></a>
-<pre><code class="language-bash"># https://web.archive.org/web/20210323214943/https://gist.github.com/atomotic/721aefe8c72ac095cb6e
-function ia-save() {
-  curl -s -I &quot;https://web.archive.org/save/$1&quot; | \
-  egrep '^location:' | \
-  awk '{ print $2 }';
-}
+binary_name = &quot;./a.out&quot;
+base_addr   = 0x0
+good_addr   = 0x00001208
+avoid_addr  = []
 
-# Usage:
-ia-save 'https://gist.github.com/atomotic/721aefe8c72ac095cb6e'
-</code></pre>
-<a class="header" href="print.html#default-parameters-in-bash" id="default-parameters-in-bash"><h3>default parameters in bash</h3></a>
-<pre><code class="language-bash"># sets x to &quot;/abc&quot; if x is not set
-x=${x:-/abc}
-</code></pre>
-<a class="header" href="print.html#gits-freshest-branch" id="gits-freshest-branch"><h3>gits freshest branch</h3></a>
-<pre><code class="language-bash"># don't foget to fetch first
-git branch --sort=-committerdate
-</code></pre>
-<a class="header" href="print.html#git-pretty-oneline-with-author-name" id="git-pretty-oneline-with-author-name"><h3>git pretty oneline with author name</h3></a>
-<pre><code class="language-bash">git log --pretty=&quot;format:%C(Yellow)%H%Creset %Cred%aN%Creset %s&quot;
-</code></pre>
-<a class="header" href="print.html#radare-pwn-pattern-debruijn-sequence" id="radare-pwn-pattern-debruijn-sequence"><h3>radare pwn pattern (debruijn sequence)</h3></a>
-<pre><code class="language-bash"># find offset
-ragg2 -P 512 -r | ./narnia1
+project = angr.Project(binary_name, load_options = { 'main_opts': {'base_addr': base_addr }})
 
-# query 
-ragg -q 0x41414841
-</code></pre>
-<a class="header" href="print.html#gdb-pwndbg-raw-stdin-input" id="gdb-pwndbg-raw-stdin-input"><h3>gdb (pwndbg) raw stdin input</h3></a>
-<pre><code class="language-bash"># with python3
-r &lt; &lt;(python3.9 -c 'import sys; sys.stdout.write(&quot;\x41&quot;*50)')
+argv1 = claripy.BVS('argv1', 8 * 0x4)
+argv2 = claripy.BVS('argv2', 8 * 0x4)
 
-# with python2
-r &lt; &lt;(python2.7 -c 'print(&quot;\x41&quot;*50)')
+initial_state = project.factory.entry_state(args=[binary_name, argv1, argv2])
 
-# with ruby
-r &lt; &lt;(ruby -e 'print(&quot;A&quot;*50)')
+simulation = project.factory.simgr(initial_state)
+simulation.explore(find=good_addr, avoid_addr=[])
+
+if simulation.found:
+     solution_state = simulation.found[0]
+     argv1 = solution_state.solver.eval(argv1, cast_to=bytes)
+     argv2 = solution_state.solver.eval(argv2, cast_to=bytes)
+     print(argv1)
+     print(argv2)
+else:
+    raise Exception('No solution')
 </code></pre>
-<a class="header" href="print.html#qemu-snapshotting" id="qemu-snapshotting"><h3>qemu snapshotting</h3></a>
+<p>Solve STDIN.</p>
+<pre><code class="language-python">import angr
+import sys
+import claripy
+
+binary_name = './a.out'
+base_addr   = 0x0
+good_addr   = 0x000011d7
+avoid_addrs  = []
+
+project = angr.Project(binary_name, load_options = { 'main_opts': {'base_addr': base_addr }})
+
+print(&quot;Entry: %x&quot; % project.loader.main_object.entry)
+initial_state = project.factory.entry_state()
+simulation = project.factory.simgr(initial_state)
+simulation.explore(find=good_addr, avoid=avoid_addrs)
+
+if simulation.found:
+    solution_state = simulation.found[0]
+    print(solution_state.posix.dumps(sys.stdin.fileno()))
+else:
+    raise Exception('No solution')
+</code></pre>
+<p>Solve stdin or argv. A wrapper script.</p>
+<pre><code class="language-python">import re
+import angr
+import claripy
+import sys
+import argparse
+
+
+def parse_args():
+    examples='''examples:
+
+      python %s 0x000011d7 ../stdin/a.out
+
+      python %s --base-addr 0x1 0x000011d8 ../stdin/a.out
+
+      python %s 0x00001208 ./a.out &quot;SOLVE(4)&quot; &quot;SOLVE(4)&quot;
+
+      python %s --avoid-addrs 0x0,0x1 0x00001208 ./a.out &quot;SOLVE(4)&quot; &quot;SOLVE(4)&quot;
+
+      # Change the marker for symbolic argvs
+      python %s --symbolic-marker SYM 0x00001208 ./a.out &quot;SYM(4)&quot; &quot;SYM(4)&quot;
+
+      python %s 0x00001208 ./a.out -a &quot;SOLVE(4)&quot; -b &quot;SOLVE(4)&quot;
+
+    '''
+    parser = argparse.ArgumentParser(description='Symbolic solve input to reach given address.', 
+                                     epilog=examples,
+                                     formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument('--symbolic-marker', dest='symbolic_marker', type=str, default=&quot;SOLVE&quot;)
+    parser.add_argument('--base-addr', dest='BASE_ADDR', type=str, default=&quot;0x0&quot;)
+    parser.add_argument('--avoid-addrs', dest='avoid', type=str, default=&quot;&quot;, help=&quot;Comma seperated list of addresses&quot;)
+    parser.add_argument('GOOD_ADDR', type=str)
+    parser.add_argument('BINARY', type=str, help=&quot;Path to executable binary&quot;)
+    parser.add_argument('ARGS', type=str, nargs=&quot;*&quot;, help=&quot;ARGV for given binary. &quot;, default=[])
+    return parser.parse_args()
+
+
+def make_argv_symbolic(argv, symbolic_marker):
+    regex = &quot;%s\((?P&lt;size&gt;\d)\)&quot; % symbolic_marker
+    for i, arg in enumerate(argv): 
+        if m := re.search(regex, arg):
+            size = int(m.group(1), 0)
+            name = 'argv_%d' % i
+            argv[i] = claripy.BVS(name, 8 * size)
+    return argv
+
+
+def parse_avoid_addr(s):
+    accu = []
+    for addr in s.split(&quot;,&quot;):
+        try:
+            accu.append(int(addr.strip(), 0))
+        except:
+            print(&quot;Couldn't parse '{}' to avoid&quot;.format(addr))
+            exit(-1)
+    return accu
+
+
+in_args = parse_args()
+binary_name = in_args.BINARY
+base_addr = int(in_args.BASE_ADDR, 0)
+good_addr = int(in_args.GOOD_ADDR, 0)
+avoid_addrs = parse_avoid_addr(in_args.avoid)
+argv      = in_args.ARGS
+
+project = angr.Project(binary_name, load_options = { 'main_opts': {'base_addr': base_addr }})
+argv = make_argv_symbolic(argv, in_args.symbolic_marker)
+initial_state = project.factory.full_init_state(args=([binary_name] + argv))
+
+
+simulation = project.factory.simgr(initial_state)
+simulation.explore(find=good_addr, avoid=avoid_addrs)
+
+if simulation.found:
+    for solution_state in simulation.found:
+        argv = [solution_state.solver.eval(arg, cast_to=bytes) for arg in argv]
+        argv = [repr(str(arg, 'utf-8', 'ignore')) for arg in argv]
+        print(&quot;$ &gt; {}&quot;.format(&quot; &quot;.join([binary_name] + argv)))
+        print(&quot;STDIN:&quot;)
+        print(solution_state.posix.dumps(sys.stdin.fileno()))
+else:
+    raise Exception('No solution')
+</code></pre>
+<p>Run an application, create a coredump and solve the coredump!</p>
+<pre><code class="language-python">import cle
+import angr
+import claripy
+
+
+# Set the reg values from the elfcore_object to the sim state, realizing that not all
+# of the registers will be supported (particularly some segment registers)
+# for regname, regval in elfcore_object.thread_registers():
+def fixed_elfcore_project(filename):
+    project = angr.Project(filename, main_opts={'backend': 'elfcore'})
+    initial_state = project.factory.full_init_state()
+
+    # Get the elfcore_object
+    elfcore_object = None
+    for obj in project.loader.all_objects:
+        if type(obj) == cle.backends.elf.elfcore.ELFCore:
+            elfcore_object = obj
+            break
+
+    if elfcore_object is None:
+        error
+    
+    regs = elfcore_object.thread_registers()
+    initial_state.regs.rax = regs['rax']
+    initial_state.regs.rcx = regs['rcx']
+    initial_state.regs.rdx = regs['rdx']
+    initial_state.regs.rbx = regs['rbx']
+    initial_state.regs.rsp = regs['rsp']
+    initial_state.regs.rbp = regs['rbp']
+    initial_state.regs.rsi = regs['rsi']
+    initial_state.regs.rdi = regs['rdi']
+    initial_state.regs.r8  = regs['r8']
+    initial_state.regs.r9  = regs['r9']
+    initial_state.regs.r10 = regs['r10']
+    initial_state.regs.r11 = regs['r11']
+    initial_state.regs.r12 = regs['r12']
+    initial_state.regs.r13 = regs['r13']
+    initial_state.regs.r14 = regs['r14']
+    initial_state.regs.r15 = regs['r15']
+    initial_state.regs.rip = regs['rip']
+    print(&quot;rip: %x&quot; % regs['rip'])
+    return project, initial_state
+
+project, initial_state = fixed_elfcore_project(&quot;core.430068&quot;)
+MAX_FLAG_LEN = 26
+
+# since rust doesn't terminate their strings with a \0, but holds the length
+# of a string within the registers, we have to make that string-length symbolic
+# aswell.
+flag_len = claripy.BVS('flag_len', 64)
+initial_state.regs.rbx = flag_len
+initial_state.solver.add(flag_len &lt;= MAX_FLAG_LEN)
+
+# we can only type printable characters into the GUI.
+# the address to the flag is stored within the register r14.
+flag = claripy.BVS('flag', MAX_FLAG_LEN * 8)
+for c in flag.chop(0x8):
+    initial_state.solver.add(c &lt;= '~')
+    initial_state.solver.add(c &gt;= ' ')
+initial_state.memory.store(initial_state.regs.r14, flag)
+
+
+simulation = project.factory.simgr(initial_state)
+
+good_addr=0x55df6050908b
+bad_addr =0x55df60509075
+simulation.explore(find=good_addr, avoid=bad_addr)
+
+if simulation.found:
+    solution_state = simulation.found[0]
+    print(&quot;Length: {}&quot;.format(solution_state.solver.eval(flag_len, cast_to=bytes)))
+    print(solution_state.solver.eval(flag, cast_to=bytes))
+else:
+    print(&quot;No solution found&quot;)
+
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="z3py"><a class="header" href="#z3py">z3py</a></h1>
+<pre><code class="language-python">from z3 import *
+s = Solver()
+x = Int('x')
+y = Int('y')
+A = Array('A', IntSort(), IntSort())
+B = Array('B', IntSort(), IntSort())
+
+s.add(x &gt; 100)
+s.add(A[0] == 5)
+s.add(A[x] == x, Store(A, x, y) == A)
+s.add(B == A)
+
+print(s.check())
+print(s.model())
+</code></pre>
+<pre><code class="language-python"># The eight queens puzzle is the problem of placing eight chess queens on an
+# 8x8 chessboard so that no two queens attack each other. Thus, a solution
+# requires that no two queens share the same row, column, or diagonal. 
+import z3
+
+
+s = z3.Solver()
+
+queens = [z3.Int(i) for i in range(0, 8)]
+
+for queen in queens:
+    s.add(z3.And(queen &gt;= 1, queen &lt;= 8))
+
+s.add(z3.Distinct(*queens))
+
+for i in range(7):
+    for n in range(i, 8):
+        s.add(z3.Not(queens[n] - n == queens[i]))
+        s.add(z3.Not(queens[n] + n == queens[i]))
+
+print(s.check())
+if s.check() == z3.sat:
+    print(s.model())
+import pdb; pdb.set_trace()
+</code></pre>
+<pre><code class="language-python">
+
+green = Int('green')
+blue = Int('blue')
+brown = Int('brown')
+red = Int('red')
+yellow = Int('yellow')
+
+s.add(And(0 &lt; green,  green &lt; 10))
+s.add(And(0 &lt; blue,   blue &lt; 10))
+s.add(And(0 &lt; brown,  brown &lt; 10))
+s.add(And(0 &lt; red,    red &lt; 10))
+s.add(And(0 &lt; yellow, yellow &lt; 10))
+
+# 1
+s.add(green + yellow == blue)
+
+# 5
+s.add(Distinct(green, blue, brown, red, yellow))
+
+# 6
+s.add(green == 6)
+
+# 7
+s.add(yellow + 4 == brown)
+
+
+
+
+</code></pre>
+<pre><code class="language-python"># Exercise 1
+#
+# Using Z3, determine if the following formulae are true:
+# (a) ¬(x ∨ y ) ≡ (¬ x ∧ ¬ y)
+# (b) (x ∧ y) ≡ ¬ (¬ x ∨ ¬ y)
+#
+# http://lim.univ-reunion.fr/staff/fred/Enseignement/AlgoAvancee/Exos/Z3-exercises.pdf
+from z3 import *
+
+s = Solver()
+x = Bool('x')
+y = Bool('y')
+s.add(Not(Or(x, y)) == And(Not(x), Not(y)))
+
+if s.check() == z3.sat:
+    model = s.model()
+    import pdb; pdb.set_trace()
+</code></pre>
+<pre><code class="language-python">from z3 import *
+
+o = Optimize()
+x = Int('x')
+o.add(x &gt; 200)
+o.add(x &lt; 900)
+o.maximize(x)
+o.check()
+o.model()
+
+import pdb; pdb.set_trace()
+</code></pre>
+<pre><code class="language-python">import z3
+# Consider the following puzzle. Spend exactly 100 dollars and buy
+# exactly 100 animals. Dogs cost 15 dollars, cats cost 1 dollar, and
+# mice cost 25 cents each. You have to buy at least one of each. How
+# many of each should you buy? 
+
+dogs = z3.Real('dogs')
+cats = z3.Real('cats')
+mice = z3.Real('mice')
+
+s = z3.Solver()
+
+s.add(100 == ((dogs * 15) + (cats * 1) + (mice * 0.25)))
+s.add(z3.And(dogs &gt; 0, cats &gt; 0, mice &gt; 0))
+
+print(s.check())
+if s.check() == z3.sat:
+    print(s.model())
+
+# PROBLEM: We get half cats. Better approach: Use z3.Int and dont check for 100, but 10000.
+</code></pre>
+<pre><code class="language-python">from z3 import *
+
+x = Real('x')
+# prints -4
+solve(x * x == 16)
+# prints 4
+solve(x * x == 16, x &gt; 0)
+</code></pre>
+<pre><code class="language-python">import z3
+# Consider the following puzzle. Spend exactly 100 dollars and buy
+# exactly 100 animals. Dogs cost 15 dollars, cats cost 1 dollar, and
+# mice cost 25 cents each. You have to buy at least one of each. How
+# many of each should you buy? 
+
+
+rumpf = z3.Int('rumpf')
+basis = z3.Int('basis')
+rumpf = z3.Int('rumpf')
+
+
+dogs = z3.Real('dogs')
+cats = z3.Real('cats')
+mice = z3.Real('mice')
+
+s = z3.Solver()
+
+s.add(100 == ((dogs * 15) + (cats * 1) + (mice * 0.25)))
+s.add(z3.And(dogs &gt; 0, cats &gt; 0, mice &gt; 0))
+
+print(s.check())
+if s.check() == z3.sat:
+    print(s.model())
+
+# PROBLEM: We get half cats. Better approach: Use z3.Int and dont check for 100, but 10000.
+</code></pre>
+<pre><code class="language-python">import z3
+import tabulate
+
+def blocks(q):
+    accu = []
+    y = 0
+    while y &lt; 9:
+        accu.append(q[y][0:3] + q[y+1][0:3] + q[y+2][0:3])
+        accu.append(q[y][3:6] + q[y+1][3:6] + q[y+2][3:6])
+        accu.append(q[y][6:9] + q[y+1][6:9] + q[y+2][6:9])
+        y = y + 3
+    return accu
+
+
+
+
+q = [[5,    3,    None,   4,    None, None,   None, None, None],
+     [None, None, 2,      None,    3, None,      1,    4, None],
+     [9,    1,    None,   None,    2, None,   None,    3,    5],
+    
+     [None, 2,       6,   None,    4, None,      3, None, None],
+     [   7,    4, None,   None,    1, None,   None,    9,    8],
+     [None, None, None,   None, None,    7,   None,    1,    4],
+    
+     [None, None, None,      9,    7,    3,   None,    6, None],
+     [   2, None,    9,   None,    8, None,      4, None,    3],
+     [None,    5, None,      2,    6,    4,   None, None, None]]
+
+s = z3.Solver()
+
+# Replace Nones with symbols
+for y, row in enumerate(q):
+    for x, elem in enumerate(row):
+        if elem == None:
+            name = &quot;({}/{})&quot;.format(y, x)
+            symbol = z3.Int(name)
+            s.add(z3.And(symbol &gt; 0, symbol &lt; 10))
+            row[x] = symbol
+
+# distinct rows
+for row in q:
+    s.add(z3.Distinct(*row))
+
+# distinct columns
+for column in zip(*q):
+    s.add(z3.Distinct(*column))
+
+# distinct 3x3 blocks:
+b = blocks(q)
+for block in blocks(q):
+    s.add(z3.Distinct(*block))
+
+print(&quot;State: {}&quot;.format(s.check()))
+
+model = s.model()
+for row in q:
+    for x, elem in enumerate(row):
+        if type(elem) != int:
+            row[x] = model[elem]
+
+print(tabulate.tabulate(q))
+import pdb; pdb.set_trace()
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h3 id="qemu-snapshotting"><a class="header" href="#qemu-snapshotting">qemu snapshotting</a></h3>
 <p>https://web.archive.org/web/20210323214342/https://documentation.suse.com/sles/12-SP4/html/SLES-all/cha-qemu-monitor.html#sec-qemu-monitor-snapshots</p>
 <p>With running vm:</p>
 <pre><code>savevm NAME
@@ -200,7 +692,7 @@ info snapshots
 qemu-img snapshot -c $snapshot_name $img
 qemu-img snapshot -d $snapshot_name $img
 </code></pre>
-<a class="header" href="print.html#qemu-vm-for-windows" id="qemu-vm-for-windows"><h3>qemu vm for windows</h3></a>
+<h3 id="qemu-vm-for-windows"><a class="header" href="#qemu-vm-for-windows">qemu vm for windows</a></h3>
 <pre><code># download and unzip windows vm
 wget https://aka.ms/windev_VM_vmware
 unzip windev_VM_vmware
@@ -235,7 +727,7 @@ bash run.sh
 # connect via vncviewer
 vncviewer :1
 </code></pre>
-<a class="header" href="print.html#ruby---highorder-methods-with-arguments" id="ruby---highorder-methods-with-arguments"><h3>ruby - highorder methods with arguments</h3></a>
+<div style="break-before: page; page-break-before: always;"></div><h3 id="ruby---highorder-methods-with-arguments"><a class="header" href="#ruby---highorder-methods-with-arguments">ruby - highorder methods with arguments</a></h3>
 <pre><code class="language-ruby">def with_args(sym, *args)
   Proc.new do |item|
     item.send(sym, *args)
@@ -246,7 +738,7 @@ end
 [1,2,3,4].map(&amp;with_args(:+, 2))
 # =&gt; [3, 4, 5, 6]
 </code></pre>
-<a class="header" href="print.html#ruby-base64-grepper" id="ruby-base64-grepper"><h3>ruby base64 grepper</h3></a>
+<h3 id="ruby-base64-grepper"><a class="header" href="#ruby-base64-grepper">ruby base64 grepper</a></h3>
 <pre><code class="language-ruby">BASE64_CHARS = &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/&quot;.freeze
 
 # +-------------------------------------------+
@@ -328,56 +820,53 @@ def encode_regex(str, remove_equals=true)
   candidates
 end
 </code></pre>
-<a class="header" href="print.html#find-all-ruby-classes" id="find-all-ruby-classes"><h3>find all ruby classes</h3></a>
+<h3 id="find-all-ruby-classes"><a class="header" href="#find-all-ruby-classes">find all ruby classes</a></h3>
 <pre><code class="language-bash">egrep -Hrn &quot;^class (\S)+ &quot; lib | sed -E 's/.+\/.*:.*:(\s)*//' | awk '{print $2}' | grep -vE &quot;^$&quot;
 
 # count the class occurences
 for klass in $(egrep -Hrn &quot;^class (\S)+ &quot; lib | sed -E 's/.+\/.*:.*:(\s)*//' | awk '{print $2}' | grep -vE &quot;^$&quot;); do amount=$(grep -Hrn &quot;$klass&quot; . | wc -l); echo &quot;$klass $amount&quot;; done
 </code></pre>
 
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                        
+                        <div style="clear: both"></div>
+                    </nav>
                 </div>
-
-                <!-- Mobile navigation buttons -->
-                
-
-                
-
             </div>
 
-            
-
-            
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                            </nav>
 
         </div>
 
-
-        <!-- Local fallback for Font Awesome -->
-        <script>
-            if ($(".fa").css("font-family") !== "FontAwesome") {
-                $('<link rel="stylesheet" type="text/css" href="_FontAwesome/css/font-awesome.css">').prependTo('head');
-            }
-        </script>
-
-        <!-- Livereload script (if served using the cli tool) -->
         
-
         
-
         
-
-        
-        <script>
-            $(document).ready(function() {
-                window.print();
-            })
+                <script type="text/javascript">
+            window.playground_copyable = true;
         </script>
         
-
-        <script src="highlight.js"></script>
-        <script src="book.js"></script>
-
-        <!-- Custom JS script -->
         
+                <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
 
+        <!-- Custom JS scripts -->
+        
+                        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+                
     </body>
 </html>

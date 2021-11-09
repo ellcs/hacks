@@ -3,8 +3,9 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>pwn</title>
-                
+        <title></title>
+                        <base href="/">
+        
 
         <!-- Custom HTML head -->
         
@@ -82,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="old_stuff.html"><strong aria-hidden="true">1.</strong> Old Stuff</a></li><li class="chapter-item expanded "><a href="bash.html"><strong aria-hidden="true">2.</strong> Bash</a></li><li class="chapter-item expanded "><a href="git.html"><strong aria-hidden="true">3.</strong> Git</a></li><li class="chapter-item expanded "><a href="pwn.html" class="active"><strong aria-hidden="true">4.</strong> pwn</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="angr.html"><strong aria-hidden="true">4.1.</strong> Angr</a></li><li class="chapter-item expanded "><a href="z3py.html"><strong aria-hidden="true">4.2.</strong> z3</a></li></ol></li><li class="chapter-item expanded "><a href="qemu.html"><strong aria-hidden="true">5.</strong> qemu</a></li><li class="chapter-item expanded "><a href="ruby.html"><strong aria-hidden="true">6.</strong> Ruby</a></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="old_stuff.html"><strong aria-hidden="true">1.</strong> Old Stuff</a></li><li class="chapter-item expanded "><a href="bash.html"><strong aria-hidden="true">2.</strong> Bash</a></li><li class="chapter-item expanded "><a href="git.html"><strong aria-hidden="true">3.</strong> Git</a></li><li class="chapter-item expanded "><a href="pwn.html"><strong aria-hidden="true">4.</strong> pwn</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="angr.html"><strong aria-hidden="true">4.1.</strong> Angr</a></li><li class="chapter-item expanded "><a href="z3py.html"><strong aria-hidden="true">4.2.</strong> z3</a></li></ol></li><li class="chapter-item expanded "><a href="qemu.html"><strong aria-hidden="true">5.</strong> qemu</a></li><li class="chapter-item expanded "><a href="ruby.html"><strong aria-hidden="true">6.</strong> Ruby</a></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -143,58 +144,14 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h3 id="radare-pwn-pattern-debruijn-sequence"><a class="header" href="#radare-pwn-pattern-debruijn-sequence">radare pwn pattern (debruijn sequence)</a></h3>
-<pre><code class="language-bash"># find offset
-ragg2 -P 512 -r | ./narnia1
-
-# query 
-ragg -q 0x41414841
-</code></pre>
-<h3 id="gdb-pwndbg-raw-stdin-input"><a class="header" href="#gdb-pwndbg-raw-stdin-input">gdb (pwndbg) raw stdin input</a></h3>
-<pre><code class="language-bash"># with python3
-r &lt; &lt;(python3.9 -c 'import sys; sys.stdout.write(&quot;\x41&quot;*50)')
-
-# with python2
-r &lt; &lt;(python2.7 -c 'print(&quot;\x41&quot;*50)')
-
-# with ruby
-r &lt; &lt;(ruby -e 'print(&quot;A&quot;*50)')
-</code></pre>
-<h3 id="print-space-without-a-space"><a class="header" href="#print-space-without-a-space">print space without a space</a></h3>
-<pre><code class="language-bash">python&lt;&lt;&lt;'print(&quot;\x20&quot;)'
-
-ruby&lt;&lt;&lt;'print(&quot;\x20&quot;)'
-
-{echo,-e,'\x20'}
-
-{base64,-d}&lt;&lt;&lt;IAo=
-
-{echo,IAo=}|{base64,-d}
-
-{xxd,-r,-p}&lt;&lt;&lt;20
-
-# $'\x20' will be interpreted as ' '
-# &lt;&lt;&lt; handles the string right of it, as a filestream
-# zsh allows streaming, without program execution
-zsh&lt;&lt;&lt;&quot;&lt;&lt;&lt;$'\x20'&gt;/dev/stdout&quot;
-zsh&lt;&lt;&lt;&quot;&lt;&lt;&lt;$'\x20'&gt;/proc/self/fd/1&quot;
-
-# use hex and octal
-cat&lt;&lt;&lt;$'\x20'
-cat&lt;&lt;&lt;$'\040'
-</code></pre>
+                        <h1 id="document-not-found-404"><a class="header" href="#document-not-found-404">Document not found (404)</a></h1>
+<p>This URL is invalid, sorry. Please use the navigation bar or search to continue.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                                                    <a rel="prev" href="git.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                                <i class="fa fa-angle-left"></i>
-                            </a>
                         
-                                                    <a rel="next" href="angr.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
                         
                         <div style="clear: both"></div>
                     </nav>
@@ -202,13 +159,7 @@ cat&lt;&lt;&lt;$'\040'
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                                    <a rel="prev" href="git.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                        <i class="fa fa-angle-left"></i>
-                    </a>
                 
-                                    <a rel="next" href="angr.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
                             </nav>
 
         </div>
