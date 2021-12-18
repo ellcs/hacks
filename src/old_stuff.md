@@ -1,6 +1,5 @@
 #  Old stuff
 
-avoid vo
 ### mount image file via loop device
 
 https://web.archive.org/web/20210630122026/https://superuser.com/questions/344899/how-can-i-mount-a-disk-image
