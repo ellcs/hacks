@@ -199,6 +199,25 @@ ia-save 'https://gist.github.com/atomotic/721aefe8c72ac095cb6e'
 <pre><code class="language-bash"># sets x to &quot;/abc&quot; if x is not set
 x=${x:-/abc}
 </code></pre>
+<h3 id="find-libreoffice-files-containing-a-string"><a class="header" href="#find-libreoffice-files-containing-a-string">find libreoffice files containing a string</a></h3>
+<p>This helps you to search for a libreoffice document containing a certian string.
+Add it to your <code>~.bashrc</code>. Start a terminal within a certian folder you want to
+search in and start searching! Make sure you installed <code>unzip</code>.</p>
+<pre><code class="language-bash"># Example usages: 
+# 
+#    find_libre horseshoes
+#
+#    find_libre &quot;horseshoes with spaces&quot; 
+#
+#    find_libre &quot;horseshoes somewhere else&quot;  &quot;/home/user&quot;
+#
+function librefind() {
+  which zipgrep 1&gt;/dev/null || { echo &quot;Please install zipgrep&quot;; exit 1; }
+  local search_term=&quot;$1&quot;
+  local search_path=${2:-$(pwd)}
+  find &quot;$search_path&quot; -exec zipgrep -iq &quot;$search_term&quot; {} 2&gt;/dev/null \; -print
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h3 id="gits-freshest-branch"><a class="header" href="#gits-freshest-branch">gits freshest branch</a></h3>
 <pre><code class="language-bash"># don't foget to fetch first
 git branch --sort=-committerdate
