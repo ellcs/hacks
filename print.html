@@ -211,7 +211,7 @@ search in and start searching! Make sure you installed <code>unzip</code>.</p>
 #
 #    find_libre &quot;horseshoes somewhere else&quot;  &quot;/home/user&quot;
 #
-function librefind() {
+function libre_find() {
   which zipgrep 1&gt;/dev/null || { echo &quot;Please install zipgrep&quot;; exit 1; }
   local search_term=&quot;$1&quot;
   local search_path=${2:-$(pwd)}
