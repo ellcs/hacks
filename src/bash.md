@@ -35,7 +35,7 @@ search in and start searching! Make sure you installed `unzip`.
 #
 #    find_libre "horseshoes somewhere else"  "/home/user"
 #
-function librefind() {
+function libre_find() {
   which zipgrep 1>/dev/null || { echo "Please install zipgrep"; exit 1; }
   local search_term="$1"
   local search_path=${2:-$(pwd)}
