@@ -170,7 +170,9 @@ guestunmount mnt
 youtube-dl --all-subs --skip-download https://www.youtube.com/watch?v=dl78PQGJpiI
 </code></pre>
 <h3 id="grep-for-base64-like-strings"><a class="header" href="#grep-for-base64-like-strings">grep for base64 like strings</a></h3>
+<p>https://unix.stackexchange.com/questions/542428/can-you-search-for-base64-with-grep#542433</p>
 <pre><code class="language-bash">grep -En '[[:alnum:]/+]{20,}' file
+grep -E '[A-Za-z0-9+/]{4}*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)'
 </code></pre>
 <h3 id="procfs--working-with-file-descriptors"><a class="header" href="#procfs--working-with-file-descriptors">procfs &amp;&amp; working with file descriptors</a></h3>
 <pre><code class="language-bash">bash -c 'grep heap /proc/$$/maps'
