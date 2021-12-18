@@ -41,8 +41,11 @@ youtube-dl --all-subs --skip-download https://www.youtube.com/watch?v=dl78PQGJpi
 
 ### grep for base64 like strings
 
+https://unix.stackexchange.com/questions/542428/can-you-search-for-base64-with-grep#542433
+
 ```bash
 grep -En '[[:alnum:]/+]{20,}' file
+grep -E '[A-Za-z0-9+/]{4}*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)'
 ```
 
 ### procfs && working with file descriptors
