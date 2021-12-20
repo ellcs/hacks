@@ -183,6 +183,25 @@ zsh&lt;&lt;&lt;&quot;&lt;&lt;&lt;$'\x20'&gt;/proc/self/fd/1&quot;
 cat&lt;&lt;&lt;$'\x20'
 cat&lt;&lt;&lt;$'\040'
 </code></pre>
+<h3 id="pwntools---enumerate-bad-and-good-chars"><a class="header" href="#pwntools---enumerate-bad-and-good-chars">pwntools - enumerate bad and good chars</a></h3>
+<pre><code class="language-python">import requests
+from pwn import *
+
+good_char, bad_char = ('', '')
+with log.progress('Trying something...') as p:
+    for c in range(0x20, 0x7f):
+        url = 'http://challenge.nahamcon.com:30936/?echo=%%%02x'
+        r = requests.get(url % c)
+        p.status(url % c)
+        char = chr(c)
+        if &quot;Hey mate, you seem to be using some characters&quot; in r.text:
+            bad_char = f'{bad_char}{char}'
+        else:
+            good_char = f'{good_char}{char}'
+            log.info(chr(c))
+print(f'Bad chars: {bad_char}')
+print(f'Good char {good_char}')
+</code></pre>
 
                     </main>
 
