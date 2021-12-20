@@ -48,3 +48,24 @@ cat<<<$'\x20'
 cat<<<$'\040'
 ```
 
+### pwntools - enumerate bad and good chars
+
+```python
+import requests
+from pwn import *
+
+good_char, bad_char = ('', '')
+with log.progress('Trying something...') as p:
+    for c in range(0x20, 0x7f):
+        url = 'http://challenge.nahamcon.com:30936/?echo=%%%02x'
+        r = requests.get(url % c)
+        p.status(url % c)
+        char = chr(c)
+        if "Hey mate, you seem to be using some characters" in r.text:
+            bad_char = f'{bad_char}{char}'
+        else:
+            good_char = f'{good_char}{char}'
+            log.info(chr(c))
+print(f'Bad chars: {bad_char}')
+print(f'Good char {good_char}')
+```
