@@ -286,7 +286,7 @@ print(f'Bad chars: {bad_char}')
 print(f'Good char {good_char}')
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="angr"><a class="header" href="#angr">Angr</a></h1>
-<p>Solve ARGV:</p>
+<h1 id="argv"><a class="header" href="#argv">argv</a></h1>
 <pre><code class="language-python">import angr
 import claripy
 import sys
@@ -315,7 +315,7 @@ if simulation.found:
 else:
     raise Exception('No solution')
 </code></pre>
-<p>Solve STDIN.</p>
+<h1 id="stdin"><a class="header" href="#stdin">stdin</a></h1>
 <pre><code class="language-python">import angr
 import sys
 import claripy
@@ -338,7 +338,7 @@ if simulation.found:
 else:
     raise Exception('No solution')
 </code></pre>
-<p>Solve stdin or argv. A wrapper script.</p>
+<h1 id="wrapper-for-stdin-and-argv"><a class="header" href="#wrapper-for-stdin-and-argv">wrapper for stdin and argv</a></h1>
 <pre><code class="language-python">import re
 import angr
 import claripy
@@ -421,7 +421,7 @@ if simulation.found:
 else:
     raise Exception('No solution')
 </code></pre>
-<p>Run an application, create a coredump and solve the coredump!</p>
+<h1 id="coredump"><a class="header" href="#coredump">coredump</a></h1>
 <pre><code class="language-python">import cle
 import angr
 import claripy
