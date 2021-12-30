@@ -69,3 +69,15 @@ with log.progress('Trying something...') as p:
 print(f'Bad chars: {bad_char}')
 print(f'Good char {good_char}')
 ```
+
+### joern buildah 
+
+```bash
+c=$(buildah from docker.io/archlinux)
+buildah run $c pacman --noconfirm -Syu
+buildah run $c pacman --noconfirm -S jdk11-openjdk unzip gcc
+buildah run $c curl -L "https://github.com/joernio/joern/releases/latest/download/joern-install.sh" -o joern-install.sh
+buildah run $c chmod u+x joern-install.sh
+buildah run $c ./joern-install.sh --interactive
+buildah commit $c joern-arch
+```
