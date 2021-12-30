@@ -202,6 +202,15 @@ with log.progress('Trying something...') as p:
 print(f'Bad chars: {bad_char}')
 print(f'Good char {good_char}')
 </code></pre>
+<h3 id="joern-buildah"><a class="header" href="#joern-buildah">joern buildah</a></h3>
+<pre><code class="language-bash">c=$(buildah from docker.io/archlinux)
+buildah run $c pacman --noconfirm -Syu
+buildah run $c pacman --noconfirm -S jdk11-openjdk unzip gcc
+buildah run $c curl -L &quot;https://github.com/joernio/joern/releases/latest/download/joern-install.sh&quot; -o joern-install.sh
+buildah run $c chmod u+x joern-install.sh
+buildah run $c ./joern-install.sh --interactive
+buildah commit $c joern-arch
+</code></pre>
 
                     </main>
 
