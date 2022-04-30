@@ -42,4 +42,12 @@ function libre_find() {
   find "$search_path" -exec zipgrep -iq "$search_term" {} 2>/dev/null \; -print
 }
 ```
+### ghostscript - merge pdf files
 
+```bash
+# combine 1.pdf and 2.pdf to out.pdf
+gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=out.pdf -dBATCH 1.pdf 2.pdf
+
+# combine matching files to 'candidate_?.pdf', while '?' represents a single char
+gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=out.pdf -dBATCH candidate_?.pdf
+```
