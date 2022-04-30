@@ -21,6 +21,8 @@ jobs:
       with:
         mdbook-version: '0.4.10'
         # mdbook-version: 'latest'
+    - name: generate summary
+      run: cd src; for t in $(find . -maxdepth 1 -type f); do echo "- [$t]($t)"; done | grep -v SUMMARY | sort > SUMMARY.md; cd ..
     - run: mdbook build
     - name: Deploy
       uses: ellcs/actions-gh-pages@v3
