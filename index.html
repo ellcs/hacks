@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Old Stuff</title>
+        <title>./angr.md</title>
                 
 
         <!-- Custom HTML head -->
@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="old_stuff.html"><strong aria-hidden="true">1.</strong> Old Stuff</a></li><li class="chapter-item expanded "><a href="bash.html"><strong aria-hidden="true">2.</strong> Bash</a></li><li class="chapter-item expanded "><a href="git.html"><strong aria-hidden="true">3.</strong> Git</a></li><li class="chapter-item expanded "><a href="pwn.html"><strong aria-hidden="true">4.</strong> pwn</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="angr.html"><strong aria-hidden="true">4.1.</strong> Angr</a></li><li class="chapter-item expanded "><a href="z3py.html"><strong aria-hidden="true">4.2.</strong> z3</a></li></ol></li><li class="chapter-item expanded "><a href="qemu.html"><strong aria-hidden="true">5.</strong> qemu</a></li><li class="chapter-item expanded "><a href="ruby.html"><strong aria-hidden="true">6.</strong> Ruby</a></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="qemu.html">./qemu.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -143,46 +143,218 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="old-stuff"><a class="header" href="#old-stuff">Old stuff</a></h1>
-<h3 id="mount-image-file-via-loop-device"><a class="header" href="#mount-image-file-via-loop-device">mount image file via loop device</a></h3>
-<p>https://web.archive.org/web/20210630122026/https://superuser.com/questions/344899/how-can-i-mount-a-disk-image</p>
-<h3 id="mount-image-file-without-root-permissions"><a class="header" href="#mount-image-file-without-root-permissions">mount image file without root permissions</a></h3>
-<p>https://web.archive.org/web/20210428082118/https://unix.stackexchange.com/questions/32008/how-to-mount-an-image-file-without-root-permission</p>
-<pre><code class="language-shell"># create mount target
-mkdir mnt   
+                        <h1 id="angr"><a class="header" href="#angr">Angr</a></h1>
+<h1 id="argv"><a class="header" href="#argv">argv</a></h1>
+<pre><code class="language-python">import angr
+import claripy
+import sys
 
-# try automount, fails if multiple partitions
-guestmount -a image.iso -r -i mnt
+binary_name = &quot;./a.out&quot;
+base_addr   = 0x0
+good_addr   = 0x00001208
+avoid_addr  = []
 
-# mount partition explicit (sda1 is not a real device)
-guestmount -a image.iso -r -m /dev/sda1 --ro mnt
+project = angr.Project(binary_name, load_options = { 'main_opts': {'base_addr': base_addr }})
 
-# unmount the guestmount (Not shown in lsblk!)
-guestunmount mnt
-</code></pre>
-<h3 id="ssh-with-old-algos"><a class="header" href="#ssh-with-old-algos">ssh with old algos</a></h3>
-<pre><code>ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 123.123.123.123
-</code></pre>
-<h3 id="download-subtitles-with-youtube-dl"><a class="header" href="#download-subtitles-with-youtube-dl">download subtitles with youtube-dl</a></h3>
-<pre><code class="language-bash">youtube-dl --list-subs https://www.youtube.com/watch?v=dl78PQGJpiI
+argv1 = claripy.BVS('argv1', 8 * 0x4)
+argv2 = claripy.BVS('argv2', 8 * 0x4)
 
-youtube-dl --all-subs --skip-download https://www.youtube.com/watch?v=dl78PQGJpiI
+initial_state = project.factory.entry_state(args=[binary_name, argv1, argv2])
+
+simulation = project.factory.simgr(initial_state)
+simulation.explore(find=good_addr, avoid_addr=[])
+
+if simulation.found:
+     solution_state = simulation.found[0]
+     argv1 = solution_state.solver.eval(argv1, cast_to=bytes)
+     argv2 = solution_state.solver.eval(argv2, cast_to=bytes)
+     print(argv1)
+     print(argv2)
+else:
+    raise Exception('No solution')
 </code></pre>
-<h3 id="grep-for-base64-like-strings"><a class="header" href="#grep-for-base64-like-strings">grep for base64 like strings</a></h3>
-<p>https://unix.stackexchange.com/questions/542428/can-you-search-for-base64-with-grep#542433</p>
-<pre><code class="language-bash">grep -En '[[:alnum:]/+]{20,}' file
-grep -E '[A-Za-z0-9+/]{4}*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)'
+<h1 id="stdin"><a class="header" href="#stdin">stdin</a></h1>
+<pre><code class="language-python">import angr
+import sys
+import claripy
+
+binary_name = './a.out'
+base_addr   = 0x0
+good_addr   = 0x000011d7
+avoid_addrs  = []
+
+project = angr.Project(binary_name, load_options = { 'main_opts': {'base_addr': base_addr }})
+
+print(&quot;Entry: %x&quot; % project.loader.main_object.entry)
+initial_state = project.factory.entry_state()
+simulation = project.factory.simgr(initial_state)
+simulation.explore(find=good_addr, avoid=avoid_addrs)
+
+if simulation.found:
+    solution_state = simulation.found[0]
+    print(solution_state.posix.dumps(sys.stdin.fileno()))
+else:
+    raise Exception('No solution')
 </code></pre>
-<h3 id="procfs--working-with-file-descriptors"><a class="header" href="#procfs--working-with-file-descriptors">procfs &amp;&amp; working with file descriptors</a></h3>
-<pre><code class="language-bash">bash -c 'grep heap /proc/$$/maps'
-diff /proc/self/fd/3 /proc/self/fd/4 4&lt;&lt;&lt;&quot;$(xxd a)&quot; 3&lt;&lt;&lt;&quot;$(xxd b)&quot;
-cat /proc/self/fd/4 4&lt;&lt;&lt;&quot;asdfasdf&quot;
+<h1 id="wrapper-for-stdin-and-argv"><a class="header" href="#wrapper-for-stdin-and-argv">wrapper for stdin and argv</a></h1>
+<pre><code class="language-python">import re
+import angr
+import claripy
+import sys
+import argparse
+
+
+def parse_args():
+    examples='''examples:
+
+      python %s 0x000011d7 ../stdin/a.out
+
+      python %s --base-addr 0x1 0x000011d8 ../stdin/a.out
+
+      python %s 0x00001208 ./a.out &quot;SOLVE(4)&quot; &quot;SOLVE(4)&quot;
+
+      python %s --avoid-addrs 0x0,0x1 0x00001208 ./a.out &quot;SOLVE(4)&quot; &quot;SOLVE(4)&quot;
+
+      # Change the marker for symbolic argvs
+      python %s --symbolic-marker SYM 0x00001208 ./a.out &quot;SYM(4)&quot; &quot;SYM(4)&quot;
+
+      python %s 0x00001208 ./a.out -a &quot;SOLVE(4)&quot; -b &quot;SOLVE(4)&quot;
+
+    '''
+    parser = argparse.ArgumentParser(description='Symbolic solve input to reach given address.', 
+                                     epilog=examples,
+                                     formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument('--symbolic-marker', dest='symbolic_marker', type=str, default=&quot;SOLVE&quot;)
+    parser.add_argument('--base-addr', dest='BASE_ADDR', type=str, default=&quot;0x0&quot;)
+    parser.add_argument('--avoid-addrs', dest='avoid', type=str, default=&quot;&quot;, help=&quot;Comma seperated list of addresses&quot;)
+    parser.add_argument('GOOD_ADDR', type=str)
+    parser.add_argument('BINARY', type=str, help=&quot;Path to executable binary&quot;)
+    parser.add_argument('ARGS', type=str, nargs=&quot;*&quot;, help=&quot;ARGV for given binary. &quot;, default=[])
+    return parser.parse_args()
+
+
+def make_argv_symbolic(argv, symbolic_marker):
+    regex = &quot;%s\((?P&lt;size&gt;\d)\)&quot; % symbolic_marker
+    for i, arg in enumerate(argv): 
+        if m := re.search(regex, arg):
+            size = int(m.group(1), 0)
+            name = 'argv_%d' % i
+            argv[i] = claripy.BVS(name, 8 * size)
+    return argv
+
+
+def parse_avoid_addr(s):
+    accu = []
+    for addr in s.split(&quot;,&quot;):
+        try:
+            accu.append(int(addr.strip(), 0))
+        except:
+            print(&quot;Couldn't parse '{}' to avoid&quot;.format(addr))
+            exit(-1)
+    return accu
+
+
+in_args = parse_args()
+binary_name = in_args.BINARY
+base_addr = int(in_args.BASE_ADDR, 0)
+good_addr = int(in_args.GOOD_ADDR, 0)
+avoid_addrs = parse_avoid_addr(in_args.avoid)
+argv      = in_args.ARGS
+
+project = angr.Project(binary_name, load_options = { 'main_opts': {'base_addr': base_addr }})
+argv = make_argv_symbolic(argv, in_args.symbolic_marker)
+initial_state = project.factory.full_init_state(args=([binary_name] + argv))
+
+
+simulation = project.factory.simgr(initial_state)
+simulation.explore(find=good_addr, avoid=avoid_addrs)
+
+if simulation.found:
+    for solution_state in simulation.found:
+        argv = [solution_state.solver.eval(arg, cast_to=bytes) for arg in argv]
+        argv = [repr(str(arg, 'utf-8', 'ignore')) for arg in argv]
+        print(&quot;$ &gt; {}&quot;.format(&quot; &quot;.join([binary_name] + argv)))
+        print(&quot;STDIN:&quot;)
+        print(solution_state.posix.dumps(sys.stdin.fileno()))
+else:
+    raise Exception('No solution')
 </code></pre>
-<h3 id="laggy-tigervnc-session"><a class="header" href="#laggy-tigervnc-session">laggy tigervnc session</a></h3>
-<pre><code class="language-bash">vncviewer -Shared -CompressLevel 9 -via ellcs@hostname :1
-</code></pre>
-<h3 id="git-push-local-branch-to-remote-with-same-name"><a class="header" href="#git-push-local-branch-to-remote-with-same-name">git push local branch to remote with same name</a></h3>
-<pre><code class="language-bash">git push -u origin $(git branch | grep '*' | sed 's/* //')
+<h1 id="coredump"><a class="header" href="#coredump">coredump</a></h1>
+<pre><code class="language-python">import cle
+import angr
+import claripy
+
+
+# Set the reg values from the elfcore_object to the sim state, realizing that not all
+# of the registers will be supported (particularly some segment registers)
+# for regname, regval in elfcore_object.thread_registers():
+def fixed_elfcore_project(filename):
+    project = angr.Project(filename, main_opts={'backend': 'elfcore'})
+    initial_state = project.factory.full_init_state()
+
+    # Get the elfcore_object
+    elfcore_object = None
+    for obj in project.loader.all_objects:
+        if type(obj) == cle.backends.elf.elfcore.ELFCore:
+            elfcore_object = obj
+            break
+
+    if elfcore_object is None:
+        error
+    
+    regs = elfcore_object.thread_registers()
+    initial_state.regs.rax = regs['rax']
+    initial_state.regs.rcx = regs['rcx']
+    initial_state.regs.rdx = regs['rdx']
+    initial_state.regs.rbx = regs['rbx']
+    initial_state.regs.rsp = regs['rsp']
+    initial_state.regs.rbp = regs['rbp']
+    initial_state.regs.rsi = regs['rsi']
+    initial_state.regs.rdi = regs['rdi']
+    initial_state.regs.r8  = regs['r8']
+    initial_state.regs.r9  = regs['r9']
+    initial_state.regs.r10 = regs['r10']
+    initial_state.regs.r11 = regs['r11']
+    initial_state.regs.r12 = regs['r12']
+    initial_state.regs.r13 = regs['r13']
+    initial_state.regs.r14 = regs['r14']
+    initial_state.regs.r15 = regs['r15']
+    initial_state.regs.rip = regs['rip']
+    print(&quot;rip: %x&quot; % regs['rip'])
+    return project, initial_state
+
+project, initial_state = fixed_elfcore_project(&quot;core.430068&quot;)
+MAX_FLAG_LEN = 26
+
+# since rust doesn't terminate their strings with a \0, but holds the length
+# of a string within the registers, we have to make that string-length symbolic
+# aswell.
+flag_len = claripy.BVS('flag_len', 64)
+initial_state.regs.rbx = flag_len
+initial_state.solver.add(flag_len &lt;= MAX_FLAG_LEN)
+
+# we can only type printable characters into the GUI.
+# the address to the flag is stored within the register r14.
+flag = claripy.BVS('flag', MAX_FLAG_LEN * 8)
+for c in flag.chop(0x8):
+    initial_state.solver.add(c &lt;= '~')
+    initial_state.solver.add(c &gt;= ' ')
+initial_state.memory.store(initial_state.regs.r14, flag)
+
+
+simulation = project.factory.simgr(initial_state)
+
+good_addr=0x55df6050908b
+bad_addr =0x55df60509075
+simulation.explore(find=good_addr, avoid=bad_addr)
+
+if simulation.found:
+    solution_state = simulation.found[0]
+    print(&quot;Length: {}&quot;.format(solution_state.solver.eval(flag_len, cast_to=bytes)))
+    print(solution_state.solver.eval(flag, cast_to=bytes))
+else:
+    print(&quot;No solution found&quot;)
+
 </code></pre>
 
                     </main>

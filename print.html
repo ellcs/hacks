@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="old_stuff.html"><strong aria-hidden="true">1.</strong> Old Stuff</a></li><li class="chapter-item expanded "><a href="bash.html"><strong aria-hidden="true">2.</strong> Bash</a></li><li class="chapter-item expanded "><a href="git.html"><strong aria-hidden="true">3.</strong> Git</a></li><li class="chapter-item expanded "><a href="pwn.html"><strong aria-hidden="true">4.</strong> pwn</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="angr.html"><strong aria-hidden="true">4.1.</strong> Angr</a></li><li class="chapter-item expanded "><a href="z3py.html"><strong aria-hidden="true">4.2.</strong> z3</a></li></ol></li><li class="chapter-item expanded "><a href="qemu.html"><strong aria-hidden="true">5.</strong> qemu</a></li><li class="chapter-item expanded "><a href="ruby.html"><strong aria-hidden="true">6.</strong> Ruby</a></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="qemu.html">./qemu.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -144,164 +144,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="old-stuff"><a class="header" href="#old-stuff">Old stuff</a></h1>
-<h3 id="mount-image-file-via-loop-device"><a class="header" href="#mount-image-file-via-loop-device">mount image file via loop device</a></h3>
-<p>https://web.archive.org/web/20210630122026/https://superuser.com/questions/344899/how-can-i-mount-a-disk-image</p>
-<h3 id="mount-image-file-without-root-permissions"><a class="header" href="#mount-image-file-without-root-permissions">mount image file without root permissions</a></h3>
-<p>https://web.archive.org/web/20210428082118/https://unix.stackexchange.com/questions/32008/how-to-mount-an-image-file-without-root-permission</p>
-<pre><code class="language-shell"># create mount target
-mkdir mnt   
-
-# try automount, fails if multiple partitions
-guestmount -a image.iso -r -i mnt
-
-# mount partition explicit (sda1 is not a real device)
-guestmount -a image.iso -r -m /dev/sda1 --ro mnt
-
-# unmount the guestmount (Not shown in lsblk!)
-guestunmount mnt
-</code></pre>
-<h3 id="ssh-with-old-algos"><a class="header" href="#ssh-with-old-algos">ssh with old algos</a></h3>
-<pre><code>ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 123.123.123.123
-</code></pre>
-<h3 id="download-subtitles-with-youtube-dl"><a class="header" href="#download-subtitles-with-youtube-dl">download subtitles with youtube-dl</a></h3>
-<pre><code class="language-bash">youtube-dl --list-subs https://www.youtube.com/watch?v=dl78PQGJpiI
-
-youtube-dl --all-subs --skip-download https://www.youtube.com/watch?v=dl78PQGJpiI
-</code></pre>
-<h3 id="grep-for-base64-like-strings"><a class="header" href="#grep-for-base64-like-strings">grep for base64 like strings</a></h3>
-<p>https://unix.stackexchange.com/questions/542428/can-you-search-for-base64-with-grep#542433</p>
-<pre><code class="language-bash">grep -En '[[:alnum:]/+]{20,}' file
-grep -E '[A-Za-z0-9+/]{4}*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)'
-</code></pre>
-<h3 id="procfs--working-with-file-descriptors"><a class="header" href="#procfs--working-with-file-descriptors">procfs &amp;&amp; working with file descriptors</a></h3>
-<pre><code class="language-bash">bash -c 'grep heap /proc/$$/maps'
-diff /proc/self/fd/3 /proc/self/fd/4 4&lt;&lt;&lt;&quot;$(xxd a)&quot; 3&lt;&lt;&lt;&quot;$(xxd b)&quot;
-cat /proc/self/fd/4 4&lt;&lt;&lt;&quot;asdfasdf&quot;
-</code></pre>
-<h3 id="laggy-tigervnc-session"><a class="header" href="#laggy-tigervnc-session">laggy tigervnc session</a></h3>
-<pre><code class="language-bash">vncviewer -Shared -CompressLevel 9 -via ellcs@hostname :1
-</code></pre>
-<h3 id="git-push-local-branch-to-remote-with-same-name"><a class="header" href="#git-push-local-branch-to-remote-with-same-name">git push local branch to remote with same name</a></h3>
-<pre><code class="language-bash">git push -u origin $(git branch | grep '*' | sed 's/* //')
-</code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h3 id="bash-function-to-archive-a-page-with-waybackmachine"><a class="header" href="#bash-function-to-archive-a-page-with-waybackmachine">bash function to archive a page with waybackmachine</a></h3>
-<pre><code class="language-bash"># https://web.archive.org/web/20210323214943/https://gist.github.com/atomotic/721aefe8c72ac095cb6e
-function ia-save() {
-  curl -s -I &quot;https://web.archive.org/save/$1&quot; | \
-  egrep '^location:' | \
-  awk '{ print $2 }';
-}
-
-# Usage:
-ia-save 'https://gist.github.com/atomotic/721aefe8c72ac095cb6e'
-</code></pre>
-<h3 id="default-parameters-in-bash"><a class="header" href="#default-parameters-in-bash">default parameters in bash</a></h3>
-<pre><code class="language-bash"># sets x to &quot;/abc&quot; if x is not set
-x=${x:-/abc}
-</code></pre>
-<h3 id="find-libreoffice-files-containing-a-string"><a class="header" href="#find-libreoffice-files-containing-a-string">find libreoffice files containing a string</a></h3>
-<p>This helps you to search for a libreoffice document containing a certian string.
-Add it to your <code>~.bashrc</code>. Start a terminal within a certian folder you want to
-search in and start searching! Make sure you installed <code>unzip</code>.</p>
-<pre><code class="language-bash"># Example usages: 
-# 
-#    find_libre horseshoes
-#
-#    find_libre &quot;horseshoes with spaces&quot; 
-#
-#    find_libre &quot;horseshoes somewhere else&quot;  &quot;/home/user&quot;
-#
-function libre_find() {
-  which zipgrep 1&gt;/dev/null || { echo &quot;Please install zipgrep&quot;; exit 1; }
-  local search_term=&quot;$1&quot;
-  local search_path=${2:-$(pwd)}
-  find &quot;$search_path&quot; -exec zipgrep -iq &quot;$search_term&quot; {} 2&gt;/dev/null \; -print
-}
-</code></pre>
-<h3 id="ghostscript---merge-pdf-files"><a class="header" href="#ghostscript---merge-pdf-files">ghostscript - merge pdf files</a></h3>
-<pre><code class="language-bash"># combine 1.pdf and 2.pdf to out.pdf
-gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=out.pdf -dBATCH 1.pdf 2.pdf
-
-# combine matching files to 'candidate_?.pdf', while '?' represents a single char
-gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=out.pdf -dBATCH candidate_?.pdf
-</code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h3 id="gits-freshest-branch"><a class="header" href="#gits-freshest-branch">gits freshest branch</a></h3>
-<pre><code class="language-bash"># don't foget to fetch first
-git branch --sort=-committerdate
-</code></pre>
-<h3 id="git-pretty-oneline-with-author-name"><a class="header" href="#git-pretty-oneline-with-author-name">git pretty oneline with author name</a></h3>
-<pre><code class="language-bash">git log --pretty=&quot;format:%C(Yellow)%H%Creset %Cred%aN%Creset %s&quot;
-</code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h3 id="radare-pwn-pattern-debruijn-sequence"><a class="header" href="#radare-pwn-pattern-debruijn-sequence">radare pwn pattern (debruijn sequence)</a></h3>
-<pre><code class="language-bash"># find offset
-ragg2 -P 512 -r | ./narnia1
-
-# query 
-ragg -q 0x41414841
-</code></pre>
-<h3 id="gdb-pwndbg-raw-stdin-input"><a class="header" href="#gdb-pwndbg-raw-stdin-input">gdb (pwndbg) raw stdin input</a></h3>
-<pre><code class="language-bash"># with python3
-r &lt; &lt;(python3.9 -c 'import sys; sys.stdout.write(&quot;\x41&quot;*50)')
-
-# with python2
-r &lt; &lt;(python2.7 -c 'print(&quot;\x41&quot;*50)')
-
-# with ruby
-r &lt; &lt;(ruby -e 'print(&quot;A&quot;*50)')
-</code></pre>
-<h3 id="print-space-without-a-space"><a class="header" href="#print-space-without-a-space">print space without a space</a></h3>
-<pre><code class="language-bash">python&lt;&lt;&lt;'print(&quot;\x20&quot;)'
-
-ruby&lt;&lt;&lt;'print(&quot;\x20&quot;)'
-
-{echo,-e,'\x20'}
-
-{base64,-d}&lt;&lt;&lt;IAo=
-
-{echo,IAo=}|{base64,-d}
-
-{xxd,-r,-p}&lt;&lt;&lt;20
-
-# $'\x20' will be interpreted as ' '
-# &lt;&lt;&lt; handles the string right of it, as a filestream
-# zsh allows streaming, without program execution
-zsh&lt;&lt;&lt;&quot;&lt;&lt;&lt;$'\x20'&gt;/dev/stdout&quot;
-zsh&lt;&lt;&lt;&quot;&lt;&lt;&lt;$'\x20'&gt;/proc/self/fd/1&quot;
-
-# use hex and octal
-cat&lt;&lt;&lt;$'\x20'
-cat&lt;&lt;&lt;$'\040'
-</code></pre>
-<h3 id="pwntools---enumerate-bad-and-good-chars"><a class="header" href="#pwntools---enumerate-bad-and-good-chars">pwntools - enumerate bad and good chars</a></h3>
-<pre><code class="language-python">import requests
-from pwn import *
-
-good_char, bad_char = ('', '')
-with log.progress('Trying something...') as p:
-    for c in range(0x20, 0x7f):
-        url = 'http://challenge.nahamcon.com:30936/?echo=%%%02x'
-        r = requests.get(url % c)
-        p.status(url % c)
-        char = chr(c)
-        if &quot;Hey mate, you seem to be using some characters&quot; in r.text:
-            bad_char = f'{bad_char}{char}'
-        else:
-            good_char = f'{good_char}{char}'
-            log.info(chr(c))
-print(f'Bad chars: {bad_char}')
-print(f'Good char {good_char}')
-</code></pre>
-<h3 id="joern-buildah"><a class="header" href="#joern-buildah">joern buildah</a></h3>
-<pre><code class="language-bash">c=$(buildah from docker.io/archlinux)
-buildah run $c pacman --noconfirm -Syu
-buildah run $c pacman --noconfirm -S jdk11-openjdk unzip gcc
-buildah run $c curl -L &quot;https://github.com/joernio/joern/releases/latest/download/joern-install.sh&quot; -o joern-install.sh
-buildah run $c chmod u+x joern-install.sh
-buildah run $c ./joern-install.sh --interactive
-buildah commit $c joern-arch
-</code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="angr"><a class="header" href="#angr">Angr</a></h1>
+                        <h1 id="angr"><a class="header" href="#angr">Angr</a></h1>
 <h1 id="argv"><a class="header" href="#argv">argv</a></h1>
 <pre><code class="language-python">import angr
 import claripy
@@ -513,6 +356,360 @@ if simulation.found:
 else:
     print(&quot;No solution found&quot;)
 
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h3 id="bash-function-to-archive-a-page-with-waybackmachine"><a class="header" href="#bash-function-to-archive-a-page-with-waybackmachine">bash function to archive a page with waybackmachine</a></h3>
+<pre><code class="language-bash"># https://web.archive.org/web/20210323214943/https://gist.github.com/atomotic/721aefe8c72ac095cb6e
+function ia-save() {
+  curl -s -I &quot;https://web.archive.org/save/$1&quot; | \
+  egrep '^location:' | \
+  awk '{ print $2 }';
+}
+
+# Usage:
+ia-save 'https://gist.github.com/atomotic/721aefe8c72ac095cb6e'
+</code></pre>
+<h3 id="default-parameters-in-bash"><a class="header" href="#default-parameters-in-bash">default parameters in bash</a></h3>
+<pre><code class="language-bash"># sets x to &quot;/abc&quot; if x is not set
+x=${x:-/abc}
+</code></pre>
+<h3 id="find-libreoffice-files-containing-a-string"><a class="header" href="#find-libreoffice-files-containing-a-string">find libreoffice files containing a string</a></h3>
+<p>This helps you to search for a libreoffice document containing a certian string.
+Add it to your <code>~.bashrc</code>. Start a terminal within a certian folder you want to
+search in and start searching! Make sure you installed <code>unzip</code>.</p>
+<pre><code class="language-bash"># Example usages: 
+# 
+#    find_libre horseshoes
+#
+#    find_libre &quot;horseshoes with spaces&quot; 
+#
+#    find_libre &quot;horseshoes somewhere else&quot;  &quot;/home/user&quot;
+#
+function libre_find() {
+  which zipgrep 1&gt;/dev/null || { echo &quot;Please install zipgrep&quot;; exit 1; }
+  local search_term=&quot;$1&quot;
+  local search_path=${2:-$(pwd)}
+  find &quot;$search_path&quot; -exec zipgrep -iq &quot;$search_term&quot; {} 2&gt;/dev/null \; -print
+}
+</code></pre>
+<h3 id="ghostscript---merge-pdf-files"><a class="header" href="#ghostscript---merge-pdf-files">ghostscript - merge pdf files</a></h3>
+<pre><code class="language-bash"># combine 1.pdf and 2.pdf to out.pdf
+gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=out.pdf -dBATCH 1.pdf 2.pdf
+
+# combine matching files to 'candidate_?.pdf', while '?' represents a single char
+gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=out.pdf -dBATCH candidate_?.pdf
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h3 id="gits-freshest-branch"><a class="header" href="#gits-freshest-branch">gits freshest branch</a></h3>
+<pre><code class="language-bash"># don't foget to fetch first
+git branch --sort=-committerdate
+</code></pre>
+<h3 id="git-pretty-oneline-with-author-name"><a class="header" href="#git-pretty-oneline-with-author-name">git pretty oneline with author name</a></h3>
+<pre><code class="language-bash">git log --pretty=&quot;format:%C(Yellow)%H%Creset %Cred%aN%Creset %s&quot;
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><pre><code>joern&gt; var bad_strlen = ({cpg.method
+         .name(&quot;(?i)strlen&quot;)
+         .callIn
+         .inAssignment
+         .target
+         .evalType(&quot;(g?)int&quot;)}).filter { c =&gt; c.lineNumber == Some(1385) }
+</code></pre>
+<h1 id="using-reachableby--reachablebyflows"><a class="header" href="#using-reachableby--reachablebyflows">using <code>reachableBy</code> &amp; <code>reachableByFlows</code></a></h1>
+<pre><code class="language-c">// $ cat test/test.c
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int getNumber() {
+    int number = atoi(&quot;8&quot;);
+    number = number + 10;
+    return number;
+}
+
+void *scenario1(int x) {
+    void *p = malloc(x);
+    return p;
+}
+
+void *scenario2(int y) {
+    int z = 10;
+    void *p = malloc(y * z);
+    return p;
+}
+
+void *scenario3() {
+    int a = getNumber();
+    void *p = malloc(a);
+    return p;
+}
+</code></pre>
+<pre><code>~/bin/joern/joern-cli/joern
+joern&gt; importCode(inputPath = &quot;test&quot;)
+joern&gt; run.ossdataflow
+joern&gt; def sink = cpg.method.callOut.name(&quot;malloc&quot;).argument
+joern&gt; def source = cpg.method.name(&quot;atoi&quot;).methodReturn
+joern&gt; sink.reachableBy(source).p
+joern&gt; sink.reachableByFlows(source).p
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="old-stuff"><a class="header" href="#old-stuff">Old stuff</a></h1>
+<h3 id="mount-image-file-via-loop-device"><a class="header" href="#mount-image-file-via-loop-device">mount image file via loop device</a></h3>
+<p>https://web.archive.org/web/20210630122026/https://superuser.com/questions/344899/how-can-i-mount-a-disk-image</p>
+<h3 id="mount-image-file-without-root-permissions"><a class="header" href="#mount-image-file-without-root-permissions">mount image file without root permissions</a></h3>
+<p>https://web.archive.org/web/20210428082118/https://unix.stackexchange.com/questions/32008/how-to-mount-an-image-file-without-root-permission</p>
+<pre><code class="language-shell"># create mount target
+mkdir mnt   
+
+# try automount, fails if multiple partitions
+guestmount -a image.iso -r -i mnt
+
+# mount partition explicit (sda1 is not a real device)
+guestmount -a image.iso -r -m /dev/sda1 --ro mnt
+
+# unmount the guestmount (Not shown in lsblk!)
+guestunmount mnt
+</code></pre>
+<h3 id="ssh-with-old-algos"><a class="header" href="#ssh-with-old-algos">ssh with old algos</a></h3>
+<pre><code>ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 123.123.123.123
+</code></pre>
+<h3 id="download-subtitles-with-youtube-dl"><a class="header" href="#download-subtitles-with-youtube-dl">download subtitles with youtube-dl</a></h3>
+<pre><code class="language-bash">youtube-dl --list-subs https://www.youtube.com/watch?v=dl78PQGJpiI
+
+youtube-dl --all-subs --skip-download https://www.youtube.com/watch?v=dl78PQGJpiI
+</code></pre>
+<h3 id="grep-for-base64-like-strings"><a class="header" href="#grep-for-base64-like-strings">grep for base64 like strings</a></h3>
+<p>https://unix.stackexchange.com/questions/542428/can-you-search-for-base64-with-grep#542433</p>
+<pre><code class="language-bash">grep -En '[[:alnum:]/+]{20,}' file
+grep -E '[A-Za-z0-9+/]{4}*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)'
+</code></pre>
+<h3 id="procfs--working-with-file-descriptors"><a class="header" href="#procfs--working-with-file-descriptors">procfs &amp;&amp; working with file descriptors</a></h3>
+<pre><code class="language-bash">bash -c 'grep heap /proc/$$/maps'
+diff /proc/self/fd/3 /proc/self/fd/4 4&lt;&lt;&lt;&quot;$(xxd a)&quot; 3&lt;&lt;&lt;&quot;$(xxd b)&quot;
+cat /proc/self/fd/4 4&lt;&lt;&lt;&quot;asdfasdf&quot;
+</code></pre>
+<h3 id="laggy-tigervnc-session"><a class="header" href="#laggy-tigervnc-session">laggy tigervnc session</a></h3>
+<pre><code class="language-bash">vncviewer -Shared -CompressLevel 9 -via ellcs@hostname :1
+</code></pre>
+<h3 id="git-push-local-branch-to-remote-with-same-name"><a class="header" href="#git-push-local-branch-to-remote-with-same-name">git push local branch to remote with same name</a></h3>
+<pre><code class="language-bash">git push -u origin $(git branch | grep '*' | sed 's/* //')
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h3 id="radare-pwn-pattern-debruijn-sequence"><a class="header" href="#radare-pwn-pattern-debruijn-sequence">radare pwn pattern (debruijn sequence)</a></h3>
+<pre><code class="language-bash"># find offset
+ragg2 -P 512 -r | ./narnia1
+
+# query 
+ragg -q 0x41414841
+</code></pre>
+<h3 id="gdb-pwndbg-raw-stdin-input"><a class="header" href="#gdb-pwndbg-raw-stdin-input">gdb (pwndbg) raw stdin input</a></h3>
+<pre><code class="language-bash"># with python3
+r &lt; &lt;(python3.9 -c 'import sys; sys.stdout.write(&quot;\x41&quot;*50)')
+
+# with python2
+r &lt; &lt;(python2.7 -c 'print(&quot;\x41&quot;*50)')
+
+# with ruby
+r &lt; &lt;(ruby -e 'print(&quot;A&quot;*50)')
+</code></pre>
+<h3 id="print-space-without-a-space"><a class="header" href="#print-space-without-a-space">print space without a space</a></h3>
+<pre><code class="language-bash">python&lt;&lt;&lt;'print(&quot;\x20&quot;)'
+
+ruby&lt;&lt;&lt;'print(&quot;\x20&quot;)'
+
+{echo,-e,'\x20'}
+
+{base64,-d}&lt;&lt;&lt;IAo=
+
+{echo,IAo=}|{base64,-d}
+
+{xxd,-r,-p}&lt;&lt;&lt;20
+
+# $'\x20' will be interpreted as ' '
+# &lt;&lt;&lt; handles the string right of it, as a filestream
+# zsh allows streaming, without program execution
+zsh&lt;&lt;&lt;&quot;&lt;&lt;&lt;$'\x20'&gt;/dev/stdout&quot;
+zsh&lt;&lt;&lt;&quot;&lt;&lt;&lt;$'\x20'&gt;/proc/self/fd/1&quot;
+
+# use hex and octal
+cat&lt;&lt;&lt;$'\x20'
+cat&lt;&lt;&lt;$'\040'
+</code></pre>
+<h3 id="pwntools---enumerate-bad-and-good-chars"><a class="header" href="#pwntools---enumerate-bad-and-good-chars">pwntools - enumerate bad and good chars</a></h3>
+<pre><code class="language-python">import requests
+from pwn import *
+
+good_char, bad_char = ('', '')
+with log.progress('Trying something...') as p:
+    for c in range(0x20, 0x7f):
+        url = 'http://challenge.nahamcon.com:30936/?echo=%%%02x'
+        r = requests.get(url % c)
+        p.status(url % c)
+        char = chr(c)
+        if &quot;Hey mate, you seem to be using some characters&quot; in r.text:
+            bad_char = f'{bad_char}{char}'
+        else:
+            good_char = f'{good_char}{char}'
+            log.info(chr(c))
+print(f'Bad chars: {bad_char}')
+print(f'Good char {good_char}')
+</code></pre>
+<h3 id="joern-buildah"><a class="header" href="#joern-buildah">joern buildah</a></h3>
+<pre><code class="language-bash">c=$(buildah from docker.io/archlinux)
+buildah run $c pacman --noconfirm -Syu
+buildah run $c pacman --noconfirm -S jdk11-openjdk unzip gcc
+buildah run $c curl -L &quot;https://github.com/joernio/joern/releases/latest/download/joern-install.sh&quot; -o joern-install.sh
+buildah run $c chmod u+x joern-install.sh
+buildah run $c ./joern-install.sh --interactive
+buildah commit $c joern-arch
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h3 id="qemu-snapshotting"><a class="header" href="#qemu-snapshotting">qemu snapshotting</a></h3>
+<p>https://web.archive.org/web/20210323214342/https://documentation.suse.com/sles/12-SP4/html/SLES-all/cha-qemu-monitor.html#sec-qemu-monitor-snapshots</p>
+<p>With running vm:</p>
+<pre><code>savevm NAME
+loadvm NAME
+delvm
+info snapshots 
+</code></pre>
+<p>From bash:</p>
+<pre><code>qemu-img snapshot -l $img
+qemu-img snapshot -c $snapshot_name $img
+qemu-img snapshot -d $snapshot_name $img
+</code></pre>
+<h3 id="qemu-vm-for-windows"><a class="header" href="#qemu-vm-for-windows">qemu vm for windows</a></h3>
+<pre><code># download and unzip windows vm
+wget https://aka.ms/windev_VM_vmware
+unzip windev_VM_vmware
+
+# convert to qcow2
+qemu-img convert WinDev*.vmdk -O qcow2 
+
+# create qemu script (adjust the disk_name)
+cat &lt;&lt;-'EOF' &gt; run.sh
+path=&quot;$(dirname $(readlink -f &quot;$0&quot;))&quot;
+disk_name=&quot;WinDev2102Eval-disk1.qcow2&quot;
+disk_path=&quot;$(pwd)/$disk_name&quot;
+monitor=&quot;unix:${path}/monitor.sock,server,nowait&quot;
+
+/usr/bin/qemu-system-x86_64 \
+  -enable-kvm \
+  -M q35 \
+  -monitor &quot;$monitor&quot; \
+  -vnc :1 \
+  -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time \
+  -smp cpus=7,maxcpus=7 -soundhw ac97 -enable-kvm -m 4100 \
+  -hda &quot;$disk_path&quot; \
+  -boot once=c,menu=off \
+  -nic user,hostfwd=tcp::10022-:22 \
+  -device nec-usb-xhci,id=xhci \
+  -name 'windows-vm' $*
+EOF
+
+# start vm
+bash run.sh
+
+# connect via vncviewer
+vncviewer :1
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h3 id="ruby---highorder-methods-with-arguments"><a class="header" href="#ruby---highorder-methods-with-arguments">ruby - highorder methods with arguments</a></h3>
+<pre><code class="language-ruby">def with_args(sym, *args)
+  Proc.new do |item|
+    item.send(sym, *args)
+  end
+end
+
+
+[1,2,3,4].map(&amp;with_args(:+, 2))
+# =&gt; [3, 4, 5, 6]
+</code></pre>
+<h3 id="ruby-base64-grepper"><a class="header" href="#ruby-base64-grepper">ruby base64 grepper</a></h3>
+<pre><code class="language-ruby">BASE64_CHARS = &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/&quot;.freeze
+
+# +-------------------------------------------+
+# |                                           |
+# |            I        II        III         |
+# | ascii |876543_21|8765_4321|87_654321|     |
+# | b64   |654321|65_4321|6543_21|654321|     |
+# |          a       b       c      d         |
+# |                                           |
+# +-------------------------------------------+
+# ASCII-Art as png: https://web.archive.org/web/20210409165509/https://upload.wikimedia.org/wikipedia/commons/7/70/Base64-de.png
+#
+# Five cases exist:
+#  1)  I, II and III are existent   -&gt; given: a,b,c,d
+#  2)  I and II are existent        -&gt; given: a,b      partially: c
+#  3)  Only I is existent           -&gt; given: a        partially: b
+#  4)  II and III are existent      -&gt; given: c, d     partially: b
+#  5)  Only III is existent         -&gt; given: d        partially: c
+#
+# In every case we have either full or partiall information about c xor b. This
+# means, we can calculate them. 
+#
+# Source has been stolen and modified from:
+#
+# https://web.archive.org/web/20210409165718/https://en.wikibooks.org/wiki/Algorithm_Implementation/Miscellaneous/Base64#Ruby
+def encode_regex(str, remove_equals=true)
+  candidates = [str.bytes, [nil] + str.bytes, [nil, nil] + str.bytes] 
+  candidates.map! do |candidate|
+    candidate.each_slice(3).map do |buf|
+      symbolic = buf 
+      while symbolic.length &lt; 3; symbolic &lt;&lt; nil; end
+
+      # replace in both directions
+      buf = symbolic.map { |b| ((b.nil?) &amp;&amp; 0) || b }
+
+      # basic 3char (8bit) to 4chars (6bit)
+      group24 = (buf[0] &lt;&lt; 16) | (buf[1] &lt;&lt; 8) | buf[2] # current 3 bytes as a 24 bit value
+      encoded = ''
+      encoded &lt;&lt; BASE64_CHARS[(group24 &gt;&gt; 18) &amp; 0x3f] # read the 24 bit value 6 bits at a time
+      encoded &lt;&lt; BASE64_CHARS[(group24 &gt;&gt; 12) &amp; 0x3f]
+      encoded &lt;&lt; BASE64_CHARS[(group24 &gt;&gt; 6) &amp; 0x3f]
+      encoded &lt;&lt; BASE64_CHARS[(group24 &gt;&gt; 0) &amp; 0x3f]
+
+      if symbolic[0].nil? &amp;&amp; symbolic[1].nil?
+        encoded[0] = '='
+        encoded[1] = '=' 
+        # encoded[2] 4bits..
+        pos = BASE64_CHARS.index(encoded[2])
+        possibilities = (4**2).times.map.with_index(0x3f - 16) { |i| BASE64_CHARS[(pos ^ i)] }
+        encoded[2] = sprintf(&quot;(%s)&quot;, possibilities.join(&quot;|&quot;))
+      elsif symbolic[0].nil?
+        encoded[0] = '='
+        # encoded[1] first two bits...
+        pos = BASE64_CHARS.index(encoded[1])
+        possibilities = (2**2).times.map.with_index(0) { |i| BASE64_CHARS[(pos ^ (i &lt;&lt; 4))] }
+        encoded[1] = sprintf(&quot;(%s)&quot;, possibilities.join(&quot;|&quot;))
+      end
+
+      if symbolic[1].nil? &amp;&amp; symbolic[2].nil?
+        # encoded[1] 4bit...
+        encoded[2] = '=' 
+        encoded[3] = '='
+        pos = BASE64_CHARS.index(encoded[1])
+        possibilities = (4**2).times.map.with_index(0x00) { |i| BASE64_CHARS[(pos ^ i)] }
+        encoded[1] = sprintf(&quot;(%s)&quot;, possibilities.join(&quot;|&quot;))
+      elsif symbolic[2].nil?
+        # encoded[3] last two bits...
+        # four bits correct; two bits incorrect: 2**2
+        encoded[3] = '='
+        pos = BASE64_CHARS.index(encoded[2])
+        possibilities = (2**2).times.map.with_index(0x00) { |i| BASE64_CHARS[(pos ^ i)] }
+        encoded[2] = sprintf(&quot;(%s)&quot;, possibilities.join(&quot;|&quot;))
+      end
+      encoded
+    end.join
+  end
+  candidates = &quot;(#{candidates.join(&quot;|&quot;)})&quot;
+  candidates = candidates.tr(&quot;=&quot;, &quot;&quot;) if remove_equals
+  candidates
+end
+</code></pre>
+<h3 id="find-all-ruby-classes"><a class="header" href="#find-all-ruby-classes">find all ruby classes</a></h3>
+<pre><code class="language-bash">egrep -Hrn &quot;^class (\S)+ &quot; lib | sed -E 's/.+\/.*:.*:(\s)*//' | awk '{print $2}' | grep -vE &quot;^$&quot;
+
+# count the class occurences
+for klass in $(egrep -Hrn &quot;^class (\S)+ &quot; lib | sed -E 's/.+\/.*:.*:(\s)*//' | awk '{print $2}' | grep -vE &quot;^$&quot;); do amount=$(grep -Hrn &quot;$klass&quot; . | wc -l); echo &quot;$klass $amount&quot;; done
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="restrict-keyforwarding"><a class="header" href="#restrict-keyforwarding">restrict keyforwarding</a></h1>
+<p>https://www.openssh.com/agent-restrict.html</p>
+<pre><code class="language-bash">$ ssh-add -h &quot;perseus@cetus.example.org&quot; \
+          -h &quot;scylla.example.org&quot; \
+          -h &quot;scylla.example.org&gt;medea@charybdis.example.org&quot; \
+          ~/.ssh/id_ed25519
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="z3py"><a class="header" href="#z3py">z3py</a></h1>
 <h3 id="arrays"><a class="header" href="#arrays">arrays</a></h3>
@@ -742,153 +939,6 @@ for row in q:
 
 print(tabulate.tabulate(q))
 import pdb; pdb.set_trace()
-</code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h3 id="qemu-snapshotting"><a class="header" href="#qemu-snapshotting">qemu snapshotting</a></h3>
-<p>https://web.archive.org/web/20210323214342/https://documentation.suse.com/sles/12-SP4/html/SLES-all/cha-qemu-monitor.html#sec-qemu-monitor-snapshots</p>
-<p>With running vm:</p>
-<pre><code>savevm NAME
-loadvm NAME
-delvm
-info snapshots 
-</code></pre>
-<p>From bash:</p>
-<pre><code>qemu-img snapshot -l $img
-qemu-img snapshot -c $snapshot_name $img
-qemu-img snapshot -d $snapshot_name $img
-</code></pre>
-<h3 id="qemu-vm-for-windows"><a class="header" href="#qemu-vm-for-windows">qemu vm for windows</a></h3>
-<pre><code># download and unzip windows vm
-wget https://aka.ms/windev_VM_vmware
-unzip windev_VM_vmware
-
-# convert to qcow2
-qemu-img convert WinDev*.vmdk -O qcow2 
-
-# create qemu script (adjust the disk_name)
-cat &lt;&lt;-'EOF' &gt; run.sh
-path=&quot;$(dirname $(readlink -f &quot;$0&quot;))&quot;
-disk_name=&quot;WinDev2102Eval-disk1.qcow2&quot;
-disk_path=&quot;$(pwd)/$disk_name&quot;
-monitor=&quot;unix:${path}/monitor.sock,server,nowait&quot;
-
-/usr/bin/qemu-system-x86_64 \
-  -enable-kvm \
-  -M q35 \
-  -monitor &quot;$monitor&quot; \
-  -vnc :1 \
-  -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time \
-  -smp cpus=7,maxcpus=7 -soundhw ac97 -enable-kvm -m 4100 \
-  -hda &quot;$disk_path&quot; \
-  -boot once=c,menu=off \
-  -nic user,hostfwd=tcp::10022-:22 \
-  -device nec-usb-xhci,id=xhci \
-  -name 'windows-vm' $*
-EOF
-
-# start vm
-bash run.sh
-
-# connect via vncviewer
-vncviewer :1
-</code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h3 id="ruby---highorder-methods-with-arguments"><a class="header" href="#ruby---highorder-methods-with-arguments">ruby - highorder methods with arguments</a></h3>
-<pre><code class="language-ruby">def with_args(sym, *args)
-  Proc.new do |item|
-    item.send(sym, *args)
-  end
-end
-
-
-[1,2,3,4].map(&amp;with_args(:+, 2))
-# =&gt; [3, 4, 5, 6]
-</code></pre>
-<h3 id="ruby-base64-grepper"><a class="header" href="#ruby-base64-grepper">ruby base64 grepper</a></h3>
-<pre><code class="language-ruby">BASE64_CHARS = &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/&quot;.freeze
-
-# +-------------------------------------------+
-# |                                           |
-# |            I        II        III         |
-# | ascii |876543_21|8765_4321|87_654321|     |
-# | b64   |654321|65_4321|6543_21|654321|     |
-# |          a       b       c      d         |
-# |                                           |
-# +-------------------------------------------+
-# ASCII-Art as png: https://web.archive.org/web/20210409165509/https://upload.wikimedia.org/wikipedia/commons/7/70/Base64-de.png
-#
-# Five cases exist:
-#  1)  I, II and III are existent   -&gt; given: a,b,c,d
-#  2)  I and II are existent        -&gt; given: a,b      partially: c
-#  3)  Only I is existent           -&gt; given: a        partially: b
-#  4)  II and III are existent      -&gt; given: c, d     partially: b
-#  5)  Only III is existent         -&gt; given: d        partially: c
-#
-# In every case we have either full or partiall information about c xor b. This
-# means, we can calculate them. 
-#
-# Source has been stolen and modified from:
-#
-# https://web.archive.org/web/20210409165718/https://en.wikibooks.org/wiki/Algorithm_Implementation/Miscellaneous/Base64#Ruby
-def encode_regex(str, remove_equals=true)
-  candidates = [str.bytes, [nil] + str.bytes, [nil, nil] + str.bytes] 
-  candidates.map! do |candidate|
-    candidate.each_slice(3).map do |buf|
-      symbolic = buf 
-      while symbolic.length &lt; 3; symbolic &lt;&lt; nil; end
-
-      # replace in both directions
-      buf = symbolic.map { |b| ((b.nil?) &amp;&amp; 0) || b }
-
-      # basic 3char (8bit) to 4chars (6bit)
-      group24 = (buf[0] &lt;&lt; 16) | (buf[1] &lt;&lt; 8) | buf[2] # current 3 bytes as a 24 bit value
-      encoded = ''
-      encoded &lt;&lt; BASE64_CHARS[(group24 &gt;&gt; 18) &amp; 0x3f] # read the 24 bit value 6 bits at a time
-      encoded &lt;&lt; BASE64_CHARS[(group24 &gt;&gt; 12) &amp; 0x3f]
-      encoded &lt;&lt; BASE64_CHARS[(group24 &gt;&gt; 6) &amp; 0x3f]
-      encoded &lt;&lt; BASE64_CHARS[(group24 &gt;&gt; 0) &amp; 0x3f]
-
-      if symbolic[0].nil? &amp;&amp; symbolic[1].nil?
-        encoded[0] = '='
-        encoded[1] = '=' 
-        # encoded[2] 4bits..
-        pos = BASE64_CHARS.index(encoded[2])
-        possibilities = (4**2).times.map.with_index(0x3f - 16) { |i| BASE64_CHARS[(pos ^ i)] }
-        encoded[2] = sprintf(&quot;(%s)&quot;, possibilities.join(&quot;|&quot;))
-      elsif symbolic[0].nil?
-        encoded[0] = '='
-        # encoded[1] first two bits...
-        pos = BASE64_CHARS.index(encoded[1])
-        possibilities = (2**2).times.map.with_index(0) { |i| BASE64_CHARS[(pos ^ (i &lt;&lt; 4))] }
-        encoded[1] = sprintf(&quot;(%s)&quot;, possibilities.join(&quot;|&quot;))
-      end
-
-      if symbolic[1].nil? &amp;&amp; symbolic[2].nil?
-        # encoded[1] 4bit...
-        encoded[2] = '=' 
-        encoded[3] = '='
-        pos = BASE64_CHARS.index(encoded[1])
-        possibilities = (4**2).times.map.with_index(0x00) { |i| BASE64_CHARS[(pos ^ i)] }
-        encoded[1] = sprintf(&quot;(%s)&quot;, possibilities.join(&quot;|&quot;))
-      elsif symbolic[2].nil?
-        # encoded[3] last two bits...
-        # four bits correct; two bits incorrect: 2**2
-        encoded[3] = '='
-        pos = BASE64_CHARS.index(encoded[2])
-        possibilities = (2**2).times.map.with_index(0x00) { |i| BASE64_CHARS[(pos ^ i)] }
-        encoded[2] = sprintf(&quot;(%s)&quot;, possibilities.join(&quot;|&quot;))
-      end
-      encoded
-    end.join
-  end
-  candidates = &quot;(#{candidates.join(&quot;|&quot;)})&quot;
-  candidates = candidates.tr(&quot;=&quot;, &quot;&quot;) if remove_equals
-  candidates
-end
-</code></pre>
-<h3 id="find-all-ruby-classes"><a class="header" href="#find-all-ruby-classes">find all ruby classes</a></h3>
-<pre><code class="language-bash">egrep -Hrn &quot;^class (\S)+ &quot; lib | sed -E 's/.+\/.*:.*:(\s)*//' | awk '{print $2}' | grep -vE &quot;^$&quot;
-
-# count the class occurences
-for klass in $(egrep -Hrn &quot;^class (\S)+ &quot; lib | sed -E 's/.+\/.*:.*:(\s)*//' | awk '{print $2}' | grep -vE &quot;^$&quot;); do amount=$(grep -Hrn &quot;$klass&quot; . | wc -l); echo &quot;$klass $amount&quot;; done
 </code></pre>
 
                     </main>

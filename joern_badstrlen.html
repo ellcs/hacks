@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>./qemu.md</title>
+        <title>./joern_badstrlen.md</title>
                 
 
         <!-- Custom HTML head -->
@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="qemu.html" class="active">./qemu.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html" class="active">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="qemu.html">./qemu.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -143,64 +143,59 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h3 id="qemu-snapshotting"><a class="header" href="#qemu-snapshotting">qemu snapshotting</a></h3>
-<p>https://web.archive.org/web/20210323214342/https://documentation.suse.com/sles/12-SP4/html/SLES-all/cha-qemu-monitor.html#sec-qemu-monitor-snapshots</p>
-<p>With running vm:</p>
-<pre><code>savevm NAME
-loadvm NAME
-delvm
-info snapshots 
+                        <pre><code>joern&gt; var bad_strlen = ({cpg.method
+         .name(&quot;(?i)strlen&quot;)
+         .callIn
+         .inAssignment
+         .target
+         .evalType(&quot;(g?)int&quot;)}).filter { c =&gt; c.lineNumber == Some(1385) }
 </code></pre>
-<p>From bash:</p>
-<pre><code>qemu-img snapshot -l $img
-qemu-img snapshot -c $snapshot_name $img
-qemu-img snapshot -d $snapshot_name $img
+<h1 id="using-reachableby--reachablebyflows"><a class="header" href="#using-reachableby--reachablebyflows">using <code>reachableBy</code> &amp; <code>reachableByFlows</code></a></h1>
+<pre><code class="language-c">// $ cat test/test.c
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int getNumber() {
+    int number = atoi(&quot;8&quot;);
+    number = number + 10;
+    return number;
+}
+
+void *scenario1(int x) {
+    void *p = malloc(x);
+    return p;
+}
+
+void *scenario2(int y) {
+    int z = 10;
+    void *p = malloc(y * z);
+    return p;
+}
+
+void *scenario3() {
+    int a = getNumber();
+    void *p = malloc(a);
+    return p;
+}
 </code></pre>
-<h3 id="qemu-vm-for-windows"><a class="header" href="#qemu-vm-for-windows">qemu vm for windows</a></h3>
-<pre><code># download and unzip windows vm
-wget https://aka.ms/windev_VM_vmware
-unzip windev_VM_vmware
-
-# convert to qcow2
-qemu-img convert WinDev*.vmdk -O qcow2 
-
-# create qemu script (adjust the disk_name)
-cat &lt;&lt;-'EOF' &gt; run.sh
-path=&quot;$(dirname $(readlink -f &quot;$0&quot;))&quot;
-disk_name=&quot;WinDev2102Eval-disk1.qcow2&quot;
-disk_path=&quot;$(pwd)/$disk_name&quot;
-monitor=&quot;unix:${path}/monitor.sock,server,nowait&quot;
-
-/usr/bin/qemu-system-x86_64 \
-  -enable-kvm \
-  -M q35 \
-  -monitor &quot;$monitor&quot; \
-  -vnc :1 \
-  -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time \
-  -smp cpus=7,maxcpus=7 -soundhw ac97 -enable-kvm -m 4100 \
-  -hda &quot;$disk_path&quot; \
-  -boot once=c,menu=off \
-  -nic user,hostfwd=tcp::10022-:22 \
-  -device nec-usb-xhci,id=xhci \
-  -name 'windows-vm' $*
-EOF
-
-# start vm
-bash run.sh
-
-# connect via vncviewer
-vncviewer :1
+<pre><code>~/bin/joern/joern-cli/joern
+joern&gt; importCode(inputPath = &quot;test&quot;)
+joern&gt; run.ossdataflow
+joern&gt; def sink = cpg.method.callOut.name(&quot;malloc&quot;).argument
+joern&gt; def source = cpg.method.name(&quot;atoi&quot;).methodReturn
+joern&gt; sink.reachableBy(source).p
+joern&gt; sink.reachableByFlows(source).p
 </code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                                                    <a rel="prev" href="pwn.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                                    <a rel="prev" href="git.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
-                                                    <a rel="next" href="ruby.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                                    <a rel="next" href="old_stuff.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -210,11 +205,11 @@ vncviewer :1
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                                    <a rel="prev" href="pwn.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                    <a rel="prev" href="git.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
-                                    <a rel="next" href="ruby.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                    <a rel="next" href="old_stuff.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                             </nav>
