@@ -1,7 +1,5 @@
 # Summary
 
-asdfasdf
-
 - [Old Stuff](./old_stuff.md)
 - [Bash](bash.md)
 - [Git](git.md)
