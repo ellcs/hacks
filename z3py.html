@@ -144,6 +144,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="z3py"><a class="header" href="#z3py">z3py</a></h1>
+<h3 id="arrays"><a class="header" href="#arrays">arrays</a></h3>
 <pre><code class="language-python">from z3 import *
 s = Solver()
 x = Int('x')
@@ -159,6 +160,7 @@ s.add(B == A)
 print(s.check())
 print(s.model())
 </code></pre>
+<h3 id="eight-queens-problem"><a class="header" href="#eight-queens-problem">eight queens problem</a></h3>
 <pre><code class="language-python"># The eight queens puzzle is the problem of placing eight chess queens on an
 # 8x8 chessboard so that no two queens attack each other. Thus, a solution
 # requires that no two queens share the same row, column, or diagonal. 
@@ -184,6 +186,7 @@ if s.check() == z3.sat:
     print(s.model())
 import pdb; pdb.set_trace()
 </code></pre>
+<h3 id="einstein-riddle"><a class="header" href="#einstein-riddle">einstein riddle</a></h3>
 <pre><code class="language-python">
 
 green = Int('green')
@@ -214,6 +217,7 @@ s.add(yellow + 4 == brown)
 
 
 </code></pre>
+<h3 id="simple-exercise"><a class="header" href="#simple-exercise">simple exercise</a></h3>
 <pre><code class="language-python"># Exercise 1
 #
 # Using Z3, determine if the following formulae are true:
@@ -232,6 +236,7 @@ if s.check() == z3.sat:
     model = s.model()
     import pdb; pdb.set_trace()
 </code></pre>
+<h3 id="maximize-problem"><a class="header" href="#maximize-problem">maximize problem</a></h3>
 <pre><code class="language-python">from z3 import *
 
 o = Optimize()
@@ -244,6 +249,7 @@ o.model()
 
 import pdb; pdb.set_trace()
 </code></pre>
+<h3 id="mice"><a class="header" href="#mice">mice</a></h3>
 <pre><code class="language-python">import z3
 # Consider the following puzzle. Spend exactly 100 dollars and buy
 # exactly 100 animals. Dogs cost 15 dollars, cats cost 1 dollar, and
@@ -265,6 +271,7 @@ if s.check() == z3.sat:
 
 # PROBLEM: We get half cats. Better approach: Use z3.Int and dont check for 100, but 10000.
 </code></pre>
+<h3 id="using-real-numbers"><a class="header" href="#using-real-numbers">using real numbers</a></h3>
 <pre><code class="language-python">from z3 import *
 
 x = Real('x')
@@ -273,6 +280,7 @@ solve(x * x == 16)
 # prints 4
 solve(x * x == 16, x &gt; 0)
 </code></pre>
+<h3 id="moneeey"><a class="header" href="#moneeey">moneeey</a></h3>
 <pre><code class="language-python">import z3
 # Consider the following puzzle. Spend exactly 100 dollars and buy
 # exactly 100 animals. Dogs cost 15 dollars, cats cost 1 dollar, and
@@ -300,6 +308,7 @@ if s.check() == z3.sat:
 
 # PROBLEM: We get half cats. Better approach: Use z3.Int and dont check for 100, but 10000.
 </code></pre>
+<h3 id="sodoku-solver"><a class="header" href="#sodoku-solver">sodoku solver</a></h3>
 <pre><code class="language-python">import z3
 import tabulate
 
