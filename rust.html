@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>./z3py.md</title>
+        <title>./rust.md</title>
                 
 
         <!-- Custom HTML head -->
@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="qemu.html">./qemu.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html" class="active">./z3py.md</a></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="qemu.html">./qemu.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html" class="active">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -143,244 +143,23 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="z3py"><a class="header" href="#z3py">z3py</a></h1>
-<h3 id="arrays"><a class="header" href="#arrays">arrays</a></h3>
-<pre><code class="language-python">from z3 import *
-s = Solver()
-x = Int('x')
-y = Int('y')
-A = Array('A', IntSort(), IntSort())
-B = Array('B', IntSort(), IntSort())
-
-s.add(x &gt; 100)
-s.add(A[0] == 5)
-s.add(A[x] == x, Store(A, x, y) == A)
-s.add(B == A)
-
-print(s.check())
-print(s.model())
-</code></pre>
-<h3 id="eight-queens-problem"><a class="header" href="#eight-queens-problem">eight queens problem</a></h3>
-<pre><code class="language-python"># The eight queens puzzle is the problem of placing eight chess queens on an
-# 8x8 chessboard so that no two queens attack each other. Thus, a solution
-# requires that no two queens share the same row, column, or diagonal. 
-import z3
-
-
-s = z3.Solver()
-
-queens = [z3.Int(i) for i in range(0, 8)]
-
-for queen in queens:
-    s.add(z3.And(queen &gt;= 1, queen &lt;= 8))
-
-s.add(z3.Distinct(*queens))
-
-for i in range(7):
-    for n in range(i, 8):
-        s.add(z3.Not(queens[n] - n == queens[i]))
-        s.add(z3.Not(queens[n] + n == queens[i]))
-
-print(s.check())
-if s.check() == z3.sat:
-    print(s.model())
-import pdb; pdb.set_trace()
-</code></pre>
-<h3 id="einstein-riddle"><a class="header" href="#einstein-riddle">einstein riddle</a></h3>
-<pre><code class="language-python">
-
-green = Int('green')
-blue = Int('blue')
-brown = Int('brown')
-red = Int('red')
-yellow = Int('yellow')
-
-s.add(And(0 &lt; green,  green &lt; 10))
-s.add(And(0 &lt; blue,   blue &lt; 10))
-s.add(And(0 &lt; brown,  brown &lt; 10))
-s.add(And(0 &lt; red,    red &lt; 10))
-s.add(And(0 &lt; yellow, yellow &lt; 10))
-
-# 1
-s.add(green + yellow == blue)
-
-# 5
-s.add(Distinct(green, blue, brown, red, yellow))
-
-# 6
-s.add(green == 6)
-
-# 7
-s.add(yellow + 4 == brown)
-
-
-
-
-</code></pre>
-<h3 id="simple-exercise"><a class="header" href="#simple-exercise">simple exercise</a></h3>
-<pre><code class="language-python"># Exercise 1
-#
-# Using Z3, determine if the following formulae are true:
-# (a) ¬(x ∨ y ) ≡ (¬ x ∧ ¬ y)
-# (b) (x ∧ y) ≡ ¬ (¬ x ∨ ¬ y)
-#
-# http://lim.univ-reunion.fr/staff/fred/Enseignement/AlgoAvancee/Exos/Z3-exercises.pdf
-from z3 import *
-
-s = Solver()
-x = Bool('x')
-y = Bool('y')
-s.add(Not(Or(x, y)) == And(Not(x), Not(y)))
-
-if s.check() == z3.sat:
-    model = s.model()
-    import pdb; pdb.set_trace()
-</code></pre>
-<h3 id="maximize-problem"><a class="header" href="#maximize-problem">maximize problem</a></h3>
-<pre><code class="language-python">from z3 import *
-
-o = Optimize()
-x = Int('x')
-o.add(x &gt; 200)
-o.add(x &lt; 900)
-o.maximize(x)
-o.check()
-o.model()
-
-import pdb; pdb.set_trace()
-</code></pre>
-<h3 id="mice"><a class="header" href="#mice">mice</a></h3>
-<pre><code class="language-python">import z3
-# Consider the following puzzle. Spend exactly 100 dollars and buy
-# exactly 100 animals. Dogs cost 15 dollars, cats cost 1 dollar, and
-# mice cost 25 cents each. You have to buy at least one of each. How
-# many of each should you buy? 
-
-dogs = z3.Real('dogs')
-cats = z3.Real('cats')
-mice = z3.Real('mice')
-
-s = z3.Solver()
-
-s.add(100 == ((dogs * 15) + (cats * 1) + (mice * 0.25)))
-s.add(z3.And(dogs &gt; 0, cats &gt; 0, mice &gt; 0))
-
-print(s.check())
-if s.check() == z3.sat:
-    print(s.model())
-
-# PROBLEM: We get half cats. Better approach: Use z3.Int and dont check for 100, but 10000.
-</code></pre>
-<h3 id="using-real-numbers"><a class="header" href="#using-real-numbers">using real numbers</a></h3>
-<pre><code class="language-python">from z3 import *
-
-x = Real('x')
-# prints -4
-solve(x * x == 16)
-# prints 4
-solve(x * x == 16, x &gt; 0)
-</code></pre>
-<h3 id="moneeey"><a class="header" href="#moneeey">moneeey</a></h3>
-<pre><code class="language-python">import z3
-# Consider the following puzzle. Spend exactly 100 dollars and buy
-# exactly 100 animals. Dogs cost 15 dollars, cats cost 1 dollar, and
-# mice cost 25 cents each. You have to buy at least one of each. How
-# many of each should you buy? 
-
-
-rumpf = z3.Int('rumpf')
-basis = z3.Int('basis')
-rumpf = z3.Int('rumpf')
-
-
-dogs = z3.Real('dogs')
-cats = z3.Real('cats')
-mice = z3.Real('mice')
-
-s = z3.Solver()
-
-s.add(100 == ((dogs * 15) + (cats * 1) + (mice * 0.25)))
-s.add(z3.And(dogs &gt; 0, cats &gt; 0, mice &gt; 0))
-
-print(s.check())
-if s.check() == z3.sat:
-    print(s.model())
-
-# PROBLEM: We get half cats. Better approach: Use z3.Int and dont check for 100, but 10000.
-</code></pre>
-<h3 id="sodoku-solver"><a class="header" href="#sodoku-solver">sodoku solver</a></h3>
-<pre><code class="language-python">import z3
-import tabulate
-
-def blocks(q):
-    accu = []
-    y = 0
-    while y &lt; 9:
-        accu.append(q[y][0:3] + q[y+1][0:3] + q[y+2][0:3])
-        accu.append(q[y][3:6] + q[y+1][3:6] + q[y+2][3:6])
-        accu.append(q[y][6:9] + q[y+1][6:9] + q[y+2][6:9])
-        y = y + 3
-    return accu
-
-
-
-
-q = [[5,    3,    None,   4,    None, None,   None, None, None],
-     [None, None, 2,      None,    3, None,      1,    4, None],
-     [9,    1,    None,   None,    2, None,   None,    3,    5],
-    
-     [None, 2,       6,   None,    4, None,      3, None, None],
-     [   7,    4, None,   None,    1, None,   None,    9,    8],
-     [None, None, None,   None, None,    7,   None,    1,    4],
-    
-     [None, None, None,      9,    7,    3,   None,    6, None],
-     [   2, None,    9,   None,    8, None,      4, None,    3],
-     [None,    5, None,      2,    6,    4,   None, None, None]]
-
-s = z3.Solver()
-
-# Replace Nones with symbols
-for y, row in enumerate(q):
-    for x, elem in enumerate(row):
-        if elem == None:
-            name = &quot;({}/{})&quot;.format(y, x)
-            symbol = z3.Int(name)
-            s.add(z3.And(symbol &gt; 0, symbol &lt; 10))
-            row[x] = symbol
-
-# distinct rows
-for row in q:
-    s.add(z3.Distinct(*row))
-
-# distinct columns
-for column in zip(*q):
-    s.add(z3.Distinct(*column))
-
-# distinct 3x3 blocks:
-b = blocks(q)
-for block in blocks(q):
-    s.add(z3.Distinct(*block))
-
-print(&quot;State: {}&quot;.format(s.check()))
-
-model = s.model()
-for row in q:
-    for x, elem in enumerate(row):
-        if type(elem) != int:
-            row[x] = model[elem]
-
-print(tabulate.tabulate(q))
-import pdb; pdb.set_trace()
-</code></pre>
+                        <h3 id="interesting-links"><a class="header" href="#interesting-links">interesting links</a></h3>
+<ul>
+<li>GUI: https://crates.io/crates/iced</li>
+<li>Async Rust: https://rust-lang.github.io/async-book/</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                                                    <a rel="prev" href="ssh.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                                    <a rel="prev" href="ruby.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
+                                                    <a rel="next" href="ssh.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
                         
                         <div style="clear: both"></div>
                     </nav>
@@ -388,10 +167,13 @@ import pdb; pdb.set_trace()
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                                    <a rel="prev" href="ssh.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                    <a rel="prev" href="ruby.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
+                                    <a rel="next" href="ssh.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
                             </nav>
 
         </div>
