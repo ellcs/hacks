@@ -395,8 +395,13 @@ function libre_find() {
 <pre><code class="language-bash"># combine 1.pdf and 2.pdf to out.pdf
 gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=out.pdf -dBATCH 1.pdf 2.pdf
 
-# combine matching files to 'candidate_?.pdf', while '?' represents a single char
+</code></pre>
+<pre><code># combine matching files to 'candidate_?.pdf', while '?' represents a single char
 gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=out.pdf -dBATCH candidate_?.pdf
+</code></pre>
+<h3 id="ghostscript---extract-pages-from-pdf"><a class="header" href="#ghostscript---extract-pages-from-pdf">ghostscript - extract pages from pdf</a></h3>
+<pre><code># extract from pages 69 till 138, including both pages
+gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=69 -dLastPage=138 -sOutputFile=extracted.pdf input.pdf
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h3 id="gits-freshest-branch"><a class="header" href="#gits-freshest-branch">gits freshest branch</a></h3>
 <pre><code class="language-bash"># don't foget to fetch first
