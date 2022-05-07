@@ -48,6 +48,15 @@ function libre_find() {
 # combine 1.pdf and 2.pdf to out.pdf
 gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=out.pdf -dBATCH 1.pdf 2.pdf
 
+```
+
+```
 # combine matching files to 'candidate_?.pdf', while '?' represents a single char
 gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=out.pdf -dBATCH candidate_?.pdf
+```
+
+### ghostscript - extract pages from pdf
+```
+# extract from pages 69 till 138, including both pages
+gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=69 -dLastPage=138 -sOutputFile=extracted.pdf input.pdf
 ```
