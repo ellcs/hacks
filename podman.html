@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>./pwn.md</title>
+        <title>./podman.md</title>
                 
 
         <!-- Custom HTML head -->
@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html" class="active">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="qemu.html">./qemu.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html" class="active">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="qemu.html">./qemu.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -143,84 +143,21 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h3 id="radare-pwn-pattern-debruijn-sequence"><a class="header" href="#radare-pwn-pattern-debruijn-sequence">radare pwn pattern (debruijn sequence)</a></h3>
-<pre><code class="language-bash"># find offset
-ragg2 -P 512 -r | ./narnia1
-
-# query 
-ragg -q 0x41414841
-</code></pre>
-<h3 id="gdb-pwndbg-raw-stdin-input"><a class="header" href="#gdb-pwndbg-raw-stdin-input">gdb (pwndbg) raw stdin input</a></h3>
-<pre><code class="language-bash"># with python3
-r &lt; &lt;(python3.9 -c 'import sys; sys.stdout.write(&quot;\x41&quot;*50)')
-
-# with python2
-r &lt; &lt;(python2.7 -c 'print(&quot;\x41&quot;*50)')
-
-# with ruby
-r &lt; &lt;(ruby -e 'print(&quot;A&quot;*50)')
-</code></pre>
-<h3 id="print-space-without-a-space"><a class="header" href="#print-space-without-a-space">print space without a space</a></h3>
-<pre><code class="language-bash">python&lt;&lt;&lt;'print(&quot;\x20&quot;)'
-
-ruby&lt;&lt;&lt;'print(&quot;\x20&quot;)'
-
-{echo,-e,'\x20'}
-
-{base64,-d}&lt;&lt;&lt;IAo=
-
-{echo,IAo=}|{base64,-d}
-
-{xxd,-r,-p}&lt;&lt;&lt;20
-
-# $'\x20' will be interpreted as ' '
-# &lt;&lt;&lt; handles the string right of it, as a filestream
-# zsh allows streaming, without program execution
-zsh&lt;&lt;&lt;&quot;&lt;&lt;&lt;$'\x20'&gt;/dev/stdout&quot;
-zsh&lt;&lt;&lt;&quot;&lt;&lt;&lt;$'\x20'&gt;/proc/self/fd/1&quot;
-
-# use hex and octal
-cat&lt;&lt;&lt;$'\x20'
-cat&lt;&lt;&lt;$'\040'
-</code></pre>
-<h3 id="pwntools---enumerate-bad-and-good-chars"><a class="header" href="#pwntools---enumerate-bad-and-good-chars">pwntools - enumerate bad and good chars</a></h3>
-<pre><code class="language-python">import requests
-from pwn import *
-
-good_char, bad_char = ('', '')
-with log.progress('Trying something...') as p:
-    for c in range(0x20, 0x7f):
-        url = 'http://challenge.nahamcon.com:30936/?echo=%%%02x'
-        r = requests.get(url % c)
-        p.status(url % c)
-        char = chr(c)
-        if &quot;Hey mate, you seem to be using some characters&quot; in r.text:
-            bad_char = f'{bad_char}{char}'
-        else:
-            good_char = f'{good_char}{char}'
-            log.info(chr(c))
-print(f'Bad chars: {bad_char}')
-print(f'Good char {good_char}')
-</code></pre>
-<h3 id="joern-buildah"><a class="header" href="#joern-buildah">joern buildah</a></h3>
-<pre><code class="language-bash">c=$(buildah from docker.io/archlinux)
-buildah run $c pacman --noconfirm -Syu
-buildah run $c pacman --noconfirm -S jdk11-openjdk unzip gcc
-buildah run $c curl -L &quot;https://github.com/joernio/joern/releases/latest/download/joern-install.sh&quot; -o joern-install.sh
-buildah run $c chmod u+x joern-install.sh
-buildah run $c ./joern-install.sh --interactive
-buildah commit $c joern-arch
+                        <h3 id="run-a-podman-container-with-binaries-from-host-without-pulling-an-image"><a class="header" href="#run-a-podman-container-with-binaries-from-host-without-pulling-an-image">run a podman container with binaries from host, without pulling an image</a></h3>
+<pre><code class="language-bash">$ mkdir /tmp/empty
+$ tar -C /tmp/empty -c . | podman import - emptybase
+$ podman run -it -v /usr:/usr -v /bin:/bin -v /lib64:/lib64 emptybase /bin/bash
 </code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                                                    <a rel="prev" href="podman.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                                    <a rel="prev" href="old_stuff.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
-                                                    <a rel="next" href="qemu.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                                    <a rel="next" href="pwn.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -230,11 +167,11 @@ buildah commit $c joern-arch
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                                    <a rel="prev" href="podman.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                    <a rel="prev" href="old_stuff.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
-                                    <a rel="next" href="qemu.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                    <a rel="next" href="pwn.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                             </nav>
