@@ -495,6 +495,7 @@ cat /proc/self/fd/4 4&lt;&lt;&lt;&quot;asdfasdf&quot;
 <pre><code class="language-bash">git push -u origin $(git branch | grep '*' | sed 's/* //')
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h3 id="run-a-podman-container-with-binaries-from-host-without-pulling-an-image"><a class="header" href="#run-a-podman-container-with-binaries-from-host-without-pulling-an-image">run a podman container with binaries from host, without pulling an image</a></h3>
+<p>This should work with docker too:</p>
 <pre><code class="language-bash">$ mkdir /tmp/empty
 $ tar -C /tmp/empty -c . | podman import - emptybase
 $ podman run -it -v /usr:/usr -v /bin:/bin -v /lib64:/lib64 emptybase /bin/bash
