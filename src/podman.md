@@ -1,4 +1,6 @@
-### run a podman container with binaries from host, without pulling an image
+### run a podman container with binaries from host, without pulling an image 
+
+This should work with docker too:
 
 ```bash
 $ mkdir /tmp/empty
