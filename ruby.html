@@ -143,7 +143,10 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h3 id="ruby---highorder-methods-with-arguments"><a class="header" href="#ruby---highorder-methods-with-arguments">ruby - highorder methods with arguments</a></h3>
+                        <h3 id="ruby---list-all-instances-of-class"><a class="header" href="#ruby---list-all-instances-of-class">ruby - list all instances of class</a></h3>
+<pre><code class="language-ruby">ObjectSpace.each_object(Human) { |humanoid| }
+</code></pre>
+<h3 id="ruby---highorder-methods-with-arguments"><a class="header" href="#ruby---highorder-methods-with-arguments">ruby - highorder methods with arguments</a></h3>
 <pre><code class="language-ruby">def with_args(sym, *args)
   Proc.new do |item|
     item.send(sym, *args)
