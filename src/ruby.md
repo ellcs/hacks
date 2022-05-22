@@ -1,3 +1,9 @@
+### ruby - list all instances of class
+
+```ruby
+ObjectSpace.each_object(Human) { |humanoid| }
+```
+
 
 ### ruby - highorder methods with arguments
 
