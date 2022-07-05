@@ -46,3 +46,7 @@
 {{#include z3py/sodoku.py}}
 ```
 
+### markov station 
+```python
+{{#include z3py/markov_station.py}}
+```
