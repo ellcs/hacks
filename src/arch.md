@@ -2,7 +2,7 @@
 
 ### install archlinux as a unprivileged user 
 
-```#bash
+```bash
 function unprivileged_arch_install_to() {
   newroot=$1; shift
   pacman_args=("${@:-base}")
