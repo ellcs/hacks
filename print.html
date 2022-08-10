@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="qemu.html">./qemu.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="arch.html">./arch.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="qemu.html">./qemu.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -356,6 +356,17 @@ if simulation.found:
 else:
     print(&quot;No solution found&quot;)
 
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="arch-linux-hacks"><a class="header" href="#arch-linux-hacks">Arch Linux Hacks</a></h1>
+<h3 id="install-archlinux-as-a-unprivileged-user"><a class="header" href="#install-archlinux-as-a-unprivileged-user">install archlinux as a unprivileged user</a></h3>
+<pre><code>function install_arch_to() {
+  newroot=$1; shift
+  pacman_args=(&quot;${@:-base}&quot;)
+  mkdir -m 0755 -p &quot;$newroot&quot;/var/{cache/pacman/pkg,lib/pacman,log} &quot;$newroot&quot;/{dev,run,etc/pacman.d}
+  mkdir -m 1777 -p &quot;$newroot&quot;/tmp
+  mkdir -m 0555 -p &quot;$newroot&quot;/{sys,proc}
+  unshare --fork -r --pid pacman -r &quot;$newroot&quot; -Sy &quot;${pacman_args[@]}&quot;
+}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h3 id="bash-function-to-archive-a-page-with-waybackmachine"><a class="header" href="#bash-function-to-archive-a-page-with-waybackmachine">bash function to archive a page with waybackmachine</a></h3>
 <pre><code class="language-bash"># https://web.archive.org/web/20210323214943/https://gist.github.com/atomotic/721aefe8c72ac095cb6e

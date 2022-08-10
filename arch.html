@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>./joern_badstrlen.md</title>
+        <title>./arch.md</title>
                 
 
         <!-- Custom HTML head -->
@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="arch.html">./arch.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html" class="active">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="qemu.html">./qemu.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="arch.html" class="active">./arch.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="qemu.html">./qemu.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -143,59 +143,27 @@
 
                 <div id="content" class="content">
                     <main>
-                        <pre><code>joern&gt; var bad_strlen = ({cpg.method
-         .name(&quot;(?i)strlen&quot;)
-         .callIn
-         .inAssignment
-         .target
-         .evalType(&quot;(g?)int&quot;)}).filter { c =&gt; c.lineNumber == Some(1385) }
-</code></pre>
-<h1 id="using-reachableby--reachablebyflows"><a class="header" href="#using-reachableby--reachablebyflows">using <code>reachableBy</code> &amp; <code>reachableByFlows</code></a></h1>
-<pre><code class="language-c">// $ cat test/test.c
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-
-int getNumber() {
-    int number = atoi(&quot;8&quot;);
-    number = number + 10;
-    return number;
+                        <h1 id="arch-linux-hacks"><a class="header" href="#arch-linux-hacks">Arch Linux Hacks</a></h1>
+<h3 id="install-archlinux-as-a-unprivileged-user"><a class="header" href="#install-archlinux-as-a-unprivileged-user">install archlinux as a unprivileged user</a></h3>
+<pre><code>function install_arch_to() {
+  newroot=$1; shift
+  pacman_args=(&quot;${@:-base}&quot;)
+  mkdir -m 0755 -p &quot;$newroot&quot;/var/{cache/pacman/pkg,lib/pacman,log} &quot;$newroot&quot;/{dev,run,etc/pacman.d}
+  mkdir -m 1777 -p &quot;$newroot&quot;/tmp
+  mkdir -m 0555 -p &quot;$newroot&quot;/{sys,proc}
+  unshare --fork -r --pid pacman -r &quot;$newroot&quot; -Sy &quot;${pacman_args[@]}&quot;
 }
-
-void *scenario1(int x) {
-    void *p = malloc(x);
-    return p;
-}
-
-void *scenario2(int y) {
-    int z = 10;
-    void *p = malloc(y * z);
-    return p;
-}
-
-void *scenario3() {
-    int a = getNumber();
-    void *p = malloc(a);
-    return p;
-}
-</code></pre>
-<pre><code>~/bin/joern/joern-cli/joern
-joern&gt; importCode(inputPath = &quot;test&quot;)
-joern&gt; run.ossdataflow
-joern&gt; def sink = cpg.method.callOut.name(&quot;malloc&quot;).argument
-joern&gt; def source = cpg.method.name(&quot;atoi&quot;).methodReturn
-joern&gt; sink.reachableBy(source).p
-joern&gt; sink.reachableByFlows(source).p
 </code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                                                    <a rel="prev" href="git.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                                    <a rel="prev" href="angr.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
-                                                    <a rel="next" href="old_stuff.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                                    <a rel="next" href="bash.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -205,11 +173,11 @@ joern&gt; sink.reachableByFlows(source).p
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                                    <a rel="prev" href="git.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                    <a rel="prev" href="angr.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
-                                    <a rel="next" href="old_stuff.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                    <a rel="next" href="bash.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                             </nav>
