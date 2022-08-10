@@ -2,8 +2,8 @@
 
 ### install archlinux as a unprivileged user 
 
-```
-function install_arch_to() {
+```#bash
+function unprivileged_arch_install_to() {
   newroot=$1; shift
   pacman_args=("${@:-base}")
   mkdir -m 0755 -p "$newroot"/var/{cache/pacman/pkg,lib/pacman,log} "$newroot"/{dev,run,etc/pacman.d}
