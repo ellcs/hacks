@@ -145,7 +145,7 @@
                     <main>
                         <h1 id="arch-linux-hacks"><a class="header" href="#arch-linux-hacks">Arch Linux Hacks</a></h1>
 <h3 id="install-archlinux-as-a-unprivileged-user"><a class="header" href="#install-archlinux-as-a-unprivileged-user">install archlinux as a unprivileged user</a></h3>
-<pre><code class="language-#bash">function unprivileged_arch_install_to() {
+<pre><code class="language-bash">function unprivileged_arch_install_to() {
   newroot=$1; shift
   pacman_args=(&quot;${@:-base}&quot;)
   mkdir -m 0755 -p &quot;$newroot&quot;/var/{cache/pacman/pkg,lib/pacman,log} &quot;$newroot&quot;/{dev,run,etc/pacman.d}
