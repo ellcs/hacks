@@ -464,7 +464,20 @@ joern&gt; def source = cpg.method.name(&quot;atoi&quot;).methodReturn
 joern&gt; sink.reachableBy(source).p
 joern&gt; sink.reachableByFlows(source).p
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h3 id="qemu-snapshotting"><a class="header" href="#qemu-snapshotting">qemu snapshotting</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h3 id="vagrant-libvirt-user-session-with-arch-box"><a class="header" href="#vagrant-libvirt-user-session-with-arch-box">vagrant libvirt user-session with arch box</a></h3>
+<pre><code class="language-ruby">Vagrant.configure(&quot;2&quot;) do |config|
+  config.vm.box = &quot;archlinux/archlinux&quot;
+
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.uri = 'qemu:///session'
+    libvirt.cpus = 12
+    libvirt.memory = 1024 * 8
+    libvirt.cmd_line = &quot;&quot;
+    libvirt.nested = true
+  end
+end
+</code></pre>
+<h3 id="qemu-snapshotting"><a class="header" href="#qemu-snapshotting">qemu snapshotting</a></h3>
 <p>https://web.archive.org/web/20210323214342/https://documentation.suse.com/sles/12-SP4/html/SLES-all/cha-qemu-monitor.html#sec-qemu-monitor-snapshots</p>
 <p>With running vm:</p>
 <pre><code>savevm NAME
