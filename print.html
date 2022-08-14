@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="arch.html">./arch.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="qemu.html">./qemu.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="arch.html">./arch.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="libvirt_qemu_vagrant.html">./libvirt_qemu_vagrant.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -464,6 +464,54 @@ joern&gt; def source = cpg.method.name(&quot;atoi&quot;).methodReturn
 joern&gt; sink.reachableBy(source).p
 joern&gt; sink.reachableByFlows(source).p
 </code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h3 id="qemu-snapshotting"><a class="header" href="#qemu-snapshotting">qemu snapshotting</a></h3>
+<p>https://web.archive.org/web/20210323214342/https://documentation.suse.com/sles/12-SP4/html/SLES-all/cha-qemu-monitor.html#sec-qemu-monitor-snapshots</p>
+<p>With running vm:</p>
+<pre><code>savevm NAME
+loadvm NAME
+delvm
+info snapshots 
+</code></pre>
+<p>From bash:</p>
+<pre><code>qemu-img snapshot -l $img
+qemu-img snapshot -c $snapshot_name $img
+qemu-img snapshot -d $snapshot_name $img
+</code></pre>
+<h3 id="qemu-vm-for-windows"><a class="header" href="#qemu-vm-for-windows">qemu vm for windows</a></h3>
+<pre><code># download and unzip windows vm
+wget https://aka.ms/windev_VM_vmware
+unzip windev_VM_vmware
+
+# convert to qcow2
+qemu-img convert WinDev*.vmdk -O qcow2 
+
+# create qemu script (adjust the disk_name)
+cat &lt;&lt;-'EOF' &gt; run.sh
+path=&quot;$(dirname $(readlink -f &quot;$0&quot;))&quot;
+disk_name=&quot;WinDev2102Eval-disk1.qcow2&quot;
+disk_path=&quot;$(pwd)/$disk_name&quot;
+monitor=&quot;unix:${path}/monitor.sock,server,nowait&quot;
+
+/usr/bin/qemu-system-x86_64 \
+  -enable-kvm \
+  -M q35 \
+  -monitor &quot;$monitor&quot; \
+  -vnc :1 \
+  -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time \
+  -smp cpus=7,maxcpus=7 -soundhw ac97 -enable-kvm -m 4100 \
+  -hda &quot;$disk_path&quot; \
+  -boot once=c,menu=off \
+  -nic user,hostfwd=tcp::10022-:22 \
+  -device nec-usb-xhci,id=xhci \
+  -name 'windows-vm' $*
+EOF
+
+# start vm
+bash run.sh
+
+# connect via vncviewer
+vncviewer :1
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="old-stuff"><a class="header" href="#old-stuff">Old stuff</a></h1>
 <h3 id="mount-image-file-via-loop-device"><a class="header" href="#mount-image-file-via-loop-device">mount image file via loop device</a></h3>
 <p>https://web.archive.org/web/20210630122026/https://superuser.com/questions/344899/how-can-i-mount-a-disk-image</p>
@@ -578,54 +626,6 @@ buildah run $c curl -L &quot;https://github.com/joernio/joern/releases/latest/do
 buildah run $c chmod u+x joern-install.sh
 buildah run $c ./joern-install.sh --interactive
 buildah commit $c joern-arch
-</code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h3 id="qemu-snapshotting"><a class="header" href="#qemu-snapshotting">qemu snapshotting</a></h3>
-<p>https://web.archive.org/web/20210323214342/https://documentation.suse.com/sles/12-SP4/html/SLES-all/cha-qemu-monitor.html#sec-qemu-monitor-snapshots</p>
-<p>With running vm:</p>
-<pre><code>savevm NAME
-loadvm NAME
-delvm
-info snapshots 
-</code></pre>
-<p>From bash:</p>
-<pre><code>qemu-img snapshot -l $img
-qemu-img snapshot -c $snapshot_name $img
-qemu-img snapshot -d $snapshot_name $img
-</code></pre>
-<h3 id="qemu-vm-for-windows"><a class="header" href="#qemu-vm-for-windows">qemu vm for windows</a></h3>
-<pre><code># download and unzip windows vm
-wget https://aka.ms/windev_VM_vmware
-unzip windev_VM_vmware
-
-# convert to qcow2
-qemu-img convert WinDev*.vmdk -O qcow2 
-
-# create qemu script (adjust the disk_name)
-cat &lt;&lt;-'EOF' &gt; run.sh
-path=&quot;$(dirname $(readlink -f &quot;$0&quot;))&quot;
-disk_name=&quot;WinDev2102Eval-disk1.qcow2&quot;
-disk_path=&quot;$(pwd)/$disk_name&quot;
-monitor=&quot;unix:${path}/monitor.sock,server,nowait&quot;
-
-/usr/bin/qemu-system-x86_64 \
-  -enable-kvm \
-  -M q35 \
-  -monitor &quot;$monitor&quot; \
-  -vnc :1 \
-  -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time \
-  -smp cpus=7,maxcpus=7 -soundhw ac97 -enable-kvm -m 4100 \
-  -hda &quot;$disk_path&quot; \
-  -boot once=c,menu=off \
-  -nic user,hostfwd=tcp::10022-:22 \
-  -device nec-usb-xhci,id=xhci \
-  -name 'windows-vm' $*
-EOF
-
-# start vm
-bash run.sh
-
-# connect via vncviewer
-vncviewer :1
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h3 id="ruby---list-all-instances-of-class"><a class="header" href="#ruby---list-all-instances-of-class">ruby - list all instances of class</a></h3>
 <pre><code class="language-ruby">ObjectSpace.each_object(Human) { |humanoid| }
