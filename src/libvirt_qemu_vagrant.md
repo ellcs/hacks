@@ -1,3 +1,19 @@
+### vagrant libvirt user-session with arch box
+
+```ruby
+Vagrant.configure("2") do |config|
+  config.vm.box = "archlinux/archlinux"
+
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.uri = 'qemu:///session'
+    libvirt.cpus = 12
+    libvirt.memory = 1024 * 8
+    libvirt.cmd_line = ""
+    libvirt.nested = true
+  end
+end
+```
+
 ### qemu snapshotting
 
 https://web.archive.org/web/20210323214342/https://documentation.suse.com/sles/12-SP4/html/SLES-all/cha-qemu-monitor.html#sec-qemu-monitor-snapshots
