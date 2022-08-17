@@ -9,7 +9,7 @@ function wg_keys() {
 }
 ```
 
-### forward with socat
+### forward wiregurad with socat
 
 ```bash
 # try with bind first
