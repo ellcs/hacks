@@ -762,7 +762,7 @@ for klass in $(egrep -Hrn &quot;^class (\S)+ &quot; lib | sed -E 's/.+\/.*:.*:(\
   wg genkey | (umask 0077 &amp;&amp; tee &quot;$1.key&quot;) | wg pubkey &gt; &quot;$1.pub&quot;
 }
 </code></pre>
-<h3 id="forward-with-socat"><a class="header" href="#forward-with-socat">forward with socat</a></h3>
+<h3 id="forward-wiregurad-with-socat"><a class="header" href="#forward-wiregurad-with-socat">forward wiregurad with socat</a></h3>
 <pre><code class="language-bash"># try with bind first
 socat udp-recvfrom:51871,reuseaddr,bind=192.168.121.75,fork UDP:192.168.121.75:51871
 </code></pre>
