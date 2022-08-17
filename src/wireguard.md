@@ -13,7 +13,14 @@ function wg_keys() {
 
 ```bash
 # try with bind first
-socat udp-recvfrom:51871,reuseaddr,bind=192.168.121.75,fork UDP:192.168.121.75:51871
+socat udp-recvfrom:51871,reuseaddr,fork UDP:192.168.121.75:51871
+```
+
+### allow vpn host to forward packages
+
+```bash
+sysctl -w net.ipv4.ip_forward=1
+sysctl -w net.ipv6.conf.all.forwarding=1
 ```
 
 ### generate configs
