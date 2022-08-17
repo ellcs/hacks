@@ -764,7 +764,11 @@ for klass in $(egrep -Hrn &quot;^class (\S)+ &quot; lib | sed -E 's/.+\/.*:.*:(\
 </code></pre>
 <h3 id="forward-wiregurad-with-socat"><a class="header" href="#forward-wiregurad-with-socat">forward wiregurad with socat</a></h3>
 <pre><code class="language-bash"># try with bind first
-socat udp-recvfrom:51871,reuseaddr,bind=192.168.121.75,fork UDP:192.168.121.75:51871
+socat udp-recvfrom:51871,reuseaddr,fork UDP:192.168.121.75:51871
+</code></pre>
+<h3 id="allow-vpn-host-to-forward-packages"><a class="header" href="#allow-vpn-host-to-forward-packages">allow vpn host to forward packages</a></h3>
+<pre><code class="language-bash">sysctl -w net.ipv4.ip_forward=1
+sysctl -w net.ipv6.conf.all.forwarding=1
 </code></pre>
 <h3 id="generate-configs"><a class="header" href="#generate-configs">generate configs</a></h3>
 <pre><code class="language-bash">function wg_keys() {
