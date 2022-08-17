@@ -35,6 +35,11 @@ function wg_interface() {
   echo "PrivateKey = ${interface_priv_key}"
 }
 
+function wg_masquerade() {
+  echo "PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE"
+  echo "PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE"
+}
+
 function wg_config_peer_server() {
   peer_pub_key="$1"
   peer_ip="$2"
@@ -55,6 +60,8 @@ function wg_config_peer_client() {
 server_wireguard_name="swg0"
 wg_keys "$server_wireguard_name"
 wg_interface "$(cat ${server_wireguard_name}.key)" "13.37.1.1" > "${server_wireguard_name}.conf"
+echo >> "${server_wireguard_name}.conf"
+wg_masquerade >> "${server_wireguard_name}.conf"
 echo >> "${server_wireguard_name}.conf"
 
 mkdir -p participants
