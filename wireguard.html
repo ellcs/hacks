@@ -155,6 +155,62 @@
 <pre><code class="language-bash"># try with bind first
 socat udp-recvfrom:51871,reuseaddr,bind=192.168.121.75,fork UDP:192.168.121.75:51871
 </code></pre>
+<h3 id="generate-configs"><a class="header" href="#generate-configs">generate configs</a></h3>
+<pre><code class="language-bash">function wg_keys() {
+  [ -z &quot;$1&quot; ] &amp;&amp; {
+    echo &quot;Missing filename prefix! Aborting...&quot;
+  }
+  wg genkey | (umask 0077 &amp;&amp; tee &quot;$1.key&quot;) | wg pubkey &gt; &quot;$1.pub&quot;
+}
+
+function wg_interface() {
+  interface_priv_key=&quot;$1&quot;
+  interface_ip=&quot;$2&quot;
+  echo &quot;[Interface]&quot;
+  echo &quot;Address = ${interface_ip}/24&quot;
+  echo &quot;ListenPort = 51871&quot;
+  echo &quot;PrivateKey = ${interface_priv_key}&quot;
+}
+
+function wg_config_peer_server() {
+  peer_pub_key=&quot;$1&quot;
+  peer_ip=&quot;$2&quot;
+  echo &quot;[Peer]&quot;
+  echo &quot;PublicKey = $peer_pub_key&quot;
+  echo &quot;AllowedIPs = $peer_ip/32&quot;
+}
+
+function wg_config_peer_client() {
+  peer_pub_key=&quot;$1&quot;
+  peer_ip=&quot;$2&quot;
+  echo &quot;[Peer]&quot;
+  echo &quot;PublicKey = $peer_pub_key&quot;
+  echo &quot;AllowedIPs = $peer_ip/32, 13.37.0.0/24&quot;
+}
+
+# server
+server_wireguard_name=&quot;swg0&quot;
+wg_keys &quot;$server_wireguard_name&quot;
+wg_interface &quot;$(cat ${server_wireguard_name}.key)&quot; &quot;13.37.1.1&quot; &gt; &quot;${server_wireguard_name}.conf&quot;
+echo &gt;&gt; &quot;${server_wireguard_name}.conf&quot;
+
+mkdir -p participants
+# clients
+i=1
+for p in $(cat participants.txt); do
+  i=$((i+1))
+  pushd participants
+    wg_keys $p
+    wg_interface   &quot;$(cat $p.key)&quot; &quot;13.37.1.$i&quot; &gt; $p.conf
+    echo &gt;&gt; $p.conf
+    wg_config_peer_client &quot;$(cat ../${server_wireguard_name}.pub)&quot; &quot;13.37.1.1&quot;  &gt;&gt; $p.conf
+    echo &gt;&gt; $p.conf
+  popd
+  echo &quot;# $p&quot; &gt;&gt; &quot;${server_wireguard_name}.conf&quot;
+  wg_config_peer_server &quot;$(cat participants/$p.pub)&quot; &quot;13.37.1.$i&quot; &gt;&gt; &quot;${server_wireguard_name}.conf&quot;
+  echo &gt;&gt; &quot;${server_wireguard_name}.conf&quot;
+done
+</code></pre>
 
                     </main>
 
