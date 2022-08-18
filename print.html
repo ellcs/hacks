@@ -477,6 +477,11 @@ joern&gt; sink.reachableByFlows(source).p
   end
 end
 </code></pre>
+<h3 id="qemu-with-qemu-bridge-helper"><a class="header" href="#qemu-with-qemu-bridge-helper">qemu with qemu-bridge-helper</a></h3>
+<pre><code class="language-bash">qemu-system-x86_64 -hda output/Arch-Linux-x86_64-cloudimg-ellcs-20220818.0.qcow2 \
+  -m 4100 -cpu host -M q35 \
+  -enable-kvm -nic bridge,br=virbr0,model=virtio-net-pci
+</code></pre>
 <h3 id="qemu-snapshotting"><a class="header" href="#qemu-snapshotting">qemu snapshotting</a></h3>
 <p>https://web.archive.org/web/20210323214342/https://documentation.suse.com/sles/12-SP4/html/SLES-all/cha-qemu-monitor.html#sec-qemu-monitor-snapshots</p>
 <p>With running vm:</p>
