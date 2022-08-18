@@ -23,6 +23,22 @@ sysctl -w net.ipv4.ip_forward=1
 sysctl -w net.ipv6.conf.all.forwarding=1
 ```
 
+### socat systemd unit
+
+```bash
+[Unit]
+Description=udp bridge to wireguard vm
+
+[Service]
+Type=simple
+
+ExecStart=socat udp-recvfrom:51871,reuseaddr,fork UDP:192.168.121.75:51871
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
 ### generate configs
 
 ```bash
