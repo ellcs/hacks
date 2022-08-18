@@ -1,14 +1,3 @@
-### create pub and private key
-
-```bash
-function wg_keys() {
-  [ -z "$1" ] && { 
-    echo "Missing filename prefix! Aborting..."
-  }
-  wg genkey | (umask 0077 && tee "$1.key") | wg pubkey > "$1.pub"
-}
-```
-
 ### forward wiregurad with socat
 
 ```bash
@@ -77,6 +66,7 @@ function wg_config_peer_client() {
   echo "[Peer]"
   echo "PublicKey = $peer_pub_key"
   echo "AllowedIPs = $peer_ip/32, 13.37.0.0/24"
+  echo "Endpoint = 192.168.122.105:51871"
 }
 
 # server
