@@ -14,6 +14,13 @@ Vagrant.configure("2") do |config|
 end
 ```
 
+### qemu with qemu-bridge-helper
+```bash
+qemu-system-x86_64 -hda output/Arch-Linux-x86_64-cloudimg-ellcs-20220818.0.qcow2 \
+  -m 4100 -cpu host -M q35 \
+  -enable-kvm -nic bridge,br=virbr0,model=virtio-net-pci
+```
+
 ### qemu snapshotting
 
 https://web.archive.org/web/20210323214342/https://documentation.suse.com/sles/12-SP4/html/SLES-all/cha-qemu-monitor.html#sec-qemu-monitor-snapshots
