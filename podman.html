@@ -149,6 +149,10 @@
 $ tar -C /tmp/empty -c . | podman import - emptybase
 $ podman run -it -v /usr:/usr -v /bin:/bin -v /lib64:/lib64 emptybase /bin/bash
 </code></pre>
+<h3 id="pass-nvidia-gpu-to-container"><a class="header" href="#pass-nvidia-gpu-to-container">pass nvidia gpu to container</a></h3>
+<pre><code># note that $container still needs the nvidia libs 
+podman run --gpus all --device /dev/nvidia0 --device /dev/nvidia-uvm --device /dev/nvidia-uvm-tools --device /dev/nvidiactl -v $(pwd):/code -it $container  /bin/bash
+</code></pre>
 
                     </main>
 
