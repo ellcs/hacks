@@ -1,3 +1,11 @@
+### wrap virsh connection in functions
+
+```bash
+function virsh_libvirthost() { 
+  virsh -c qemu+ssh://root@192.168.122.105/system $@
+}
+```
+
 ### vagrant libvirt user-session with arch box
 
 ```ruby
