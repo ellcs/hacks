@@ -60,3 +60,9 @@ gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=out.pdf -dBATCH candidate_?.pdf
 # extract from pages 69 till 138, including both pages
 gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=69 -dLastPage=138 -sOutputFile=extracted.pdf input.pdf
 ```
+
+### android full backup
+
+```bash
+adb backup -apk -obb -shared -all -system -f fullbackup$(date | tr ' ' '_').ab
+```
