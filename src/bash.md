@@ -66,3 +66,9 @@ gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=69 -dLastPage=138 -sO
 ```bash
 adb backup -apk -obb -shared -all -system -f fullbackup$(date | tr ' ' '_').ab
 ```
+
+# borg prune
+
+```bash
+borg prune -v --list --keep-daily=7 --keep-weekly=4 --keep-monthly=-1 /path/to/borg_repo
+```
