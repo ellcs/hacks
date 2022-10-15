@@ -616,13 +616,13 @@ podman run --gpus all --device /dev/nvidia0 --device /dev/nvidia-uvm --device /d
 RCKWRTZ_MISSING_LOCAL_PORT=$'Missing local port to remote forward.'$RCKWRTZ_USAGE
 RCKWRTZ_MISSING_HOST=$'Missing ssh host to bind port on.'$RCKWRTZ_USAGE
 function rckwrtz() {
-  [ -z &quot;$1&quot; ] &amp;&amp; { echo $RCKWRTZ_MISSING_HOST; return 1 }       || host=$1
-  [ -z &quot;$2&quot; ] &amp;&amp; { echo $RCKWRTZ_MISSING_LOCAL_PORT; return 1 } || local_port=$2
-  
+  [ -z &quot;$1&quot; ] &amp;&amp; ( echo $RCKWRTZ_MISSING_HOST; return 1 ) || host=$1
+  [ -z &quot;$2&quot; ] &amp;&amp; ( echo $RCKWRTZ_MISSING_LOCAL_PORT; return 1 )|| local_port=$2
+
   open_port=$(ssh $host -- 'ruby -rsocket -e &quot;puts Addrinfo.tcp(\&quot;\&quot;, 0).bind { |s| s.local_address.ip_port }&quot;')
   echo &quot;Opening port &quot;${open_port}&quot; on remote, plugging it to localhost:${local_port}...&quot;
   ssh -N -R ${open_port}:\*:${local_port} $host
-  echo &quot;Forwarding. Press ctrl+c to abort.&quot; 
+  echo &quot;Forwarding. Press ctrl+c to abort.&quot;
 }
 </code></pre>
 <h3 id="radare-pwn-pattern-debruijn-sequence"><a class="header" href="#radare-pwn-pattern-debruijn-sequence">radare pwn pattern (debruijn sequence)</a></h3>
