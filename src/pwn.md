@@ -7,13 +7,13 @@ RCKWRTZ_USAGE=$'\n\n    USAGE: rckwrtz username@host.com 1337'
 RCKWRTZ_MISSING_LOCAL_PORT=$'Missing local port to remote forward.'$RCKWRTZ_USAGE
 RCKWRTZ_MISSING_HOST=$'Missing ssh host to bind port on.'$RCKWRTZ_USAGE
 function rckwrtz() {
-  [ -z "$1" ] && { echo $RCKWRTZ_MISSING_HOST; return 1 }       || host=$1
-  [ -z "$2" ] && { echo $RCKWRTZ_MISSING_LOCAL_PORT; return 1 } || local_port=$2
-  
+  [ -z "$1" ] && ( echo $RCKWRTZ_MISSING_HOST; return 1 ) || host=$1
+  [ -z "$2" ] && ( echo $RCKWRTZ_MISSING_LOCAL_PORT; return 1 )|| local_port=$2
+
   open_port=$(ssh $host -- 'ruby -rsocket -e "puts Addrinfo.tcp(\"\", 0).bind { |s| s.local_address.ip_port }"')
   echo "Opening port "${open_port}" on remote, plugging it to localhost:${local_port}..."
   ssh -N -R ${open_port}:\*:${local_port} $host
-  echo "Forwarding. Press ctrl+c to abort." 
+  echo "Forwarding. Press ctrl+c to abort."
 }
 ```
 
