@@ -1,3 +1,15 @@
+### ruby - list tty status for standard IO
+
+```bash
+function is_tty() {
+  ruby -e 'puts((0..2).map { |n| File.for_fd(n).tty? }.join(" "))'
+}
+
+$ echo "stdin false" | is_tty
+$ is_tty | cat - 
+
+```
+
 ### ruby - list all instances of class
 
 ```ruby
