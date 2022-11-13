@@ -693,7 +693,16 @@ buildah run $c chmod u+x joern-install.sh
 buildah run $c ./joern-install.sh --interactive
 buildah commit $c joern-arch
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h3 id="ruby---list-all-instances-of-class"><a class="header" href="#ruby---list-all-instances-of-class">ruby - list all instances of class</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h3 id="ruby---list-tty-status-for-standard-io"><a class="header" href="#ruby---list-tty-status-for-standard-io">ruby - list tty status for standard IO</a></h3>
+<pre><code class="language-bash">function is_tty() {
+  ruby -e 'puts((0..2).map { |n| File.for_fd(n).tty? }.join(&quot; &quot;))'
+}
+
+$ echo &quot;stdin false&quot; | is_tty
+$ is_tty | cat - 
+
+</code></pre>
+<h3 id="ruby---list-all-instances-of-class"><a class="header" href="#ruby---list-all-instances-of-class">ruby - list all instances of class</a></h3>
 <pre><code class="language-ruby">ObjectSpace.each_object(Human) { |humanoid| }
 </code></pre>
 <h3 id="ruby---highorder-methods-with-arguments"><a class="header" href="#ruby---highorder-methods-with-arguments">ruby - highorder methods with arguments</a></h3>
