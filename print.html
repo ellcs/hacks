@@ -357,6 +357,35 @@ else:
     print(&quot;No solution found&quot;)
 
 </code></pre>
+<h1 id="cfg-inspection"><a class="header" href="#cfg-inspection">cfg inspection</a></h1>
+<p>https://docs.angr.io/built-in-analyses/cfg</p>
+<pre><code class="language-python">import angr
+p = angr.Project('/bin/true', load_options={'auto_load_libs': False})
+cfg = p.analyses.CFGFast()
+len(cfg.graph.nodes())
+len(cfg.graph.edges())
+
+# get the node 
+entry_node = cfg.get_any_node(p.entry)
+
+# get successor node of the cfg node `entry`
+# -&gt; list[angr.knowledge_plugins.cfg.cfg_node.CFGNode]
+succ = cfg.get_successors(entry_node)
+# there is only main as successor
+main = succ[0]
+
+
+# opcodes of the cfg node `entry`
+entry_node.block.bytes
+
+# number of instructions of the cfg node `entry`
+# -&gt; int
+entry_node.block.instructions
+
+# all addresses of the cfg node `entry`
+# -&gt; list[int]
+entry_node.block.instruction_addrs
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="arch-linux-hacks"><a class="header" href="#arch-linux-hacks">Arch Linux Hacks</a></h1>
 <h3 id="install-archlinux-as-a-unprivileged-user"><a class="header" href="#install-archlinux-as-a-unprivileged-user">install archlinux as a unprivileged user</a></h3>
 <pre><code class="language-bash">function unprivileged_arch_install_to() {
