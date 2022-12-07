@@ -61,7 +61,7 @@ entry_node.block.instruction_addrs
 
 ### print all jump gadgets
 
-```
+```python
 import angr, angrop
 
 p = angr.Project('/bin/ls', load_options={'auto_load_libs': False})
