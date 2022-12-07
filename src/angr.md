@@ -58,3 +58,24 @@ entry_node.block.instructions
 # -> list[int]
 entry_node.block.instruction_addrs
 ```
+
+### print all jump gadgets
+
+```
+import angr, angrop
+
+p = angr.Project('/bin/ls', load_options={'auto_load_libs': False})
+cfg = p.analyses.CFGFast()
+rop = p.analyses.ROP()
+rop.find_gadgets()
+
+print("[+] done with angr stuff; filter jmp gadgets")
+jump_gadgets = [g for g in rop.gadgets if g.gadget_type == 'jump']
+
+print("[+] print jmp gadgets")
+for jmp in jump_gadgets:
+	print(f"jmp gadget @ {jmp.addr}")
+	print(p.factory.block(jmp.addr).capstone)
+
+import IPython; IPython.embed()
+```
