@@ -386,6 +386,24 @@ entry_node.block.instructions
 # -&gt; list[int]
 entry_node.block.instruction_addrs
 </code></pre>
+<h3 id="print-all-jump-gadgets"><a class="header" href="#print-all-jump-gadgets">print all jump gadgets</a></h3>
+<pre><code>import angr, angrop
+
+p = angr.Project('/bin/ls', load_options={'auto_load_libs': False})
+cfg = p.analyses.CFGFast()
+rop = p.analyses.ROP()
+rop.find_gadgets()
+
+print(&quot;[+] done with angr stuff; filter jmp gadgets&quot;)
+jump_gadgets = [g for g in rop.gadgets if g.gadget_type == 'jump']
+
+print(&quot;[+] print jmp gadgets&quot;)
+for jmp in jump_gadgets:
+	print(f&quot;jmp gadget @ {jmp.addr}&quot;)
+	print(p.factory.block(jmp.addr).capstone)
+
+import IPython; IPython.embed()
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="arch-linux-hacks"><a class="header" href="#arch-linux-hacks">Arch Linux Hacks</a></h1>
 <h3 id="install-archlinux-as-a-unprivileged-user"><a class="header" href="#install-archlinux-as-a-unprivileged-user">install archlinux as a unprivileged user</a></h3>
 <pre><code class="language-bash">function unprivileged_arch_install_to() {
