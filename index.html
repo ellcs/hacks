@@ -386,7 +386,7 @@ entry_node.block.instructions
 entry_node.block.instruction_addrs
 </code></pre>
 <h3 id="print-all-jump-gadgets"><a class="header" href="#print-all-jump-gadgets">print all jump gadgets</a></h3>
-<pre><code>import angr, angrop
+<pre><code class="language-python">import angr, angrop
 
 p = angr.Project('/bin/ls', load_options={'auto_load_libs': False})
 cfg = p.analyses.CFGFast()
