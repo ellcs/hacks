@@ -61,6 +61,7 @@ entry_node.block.instruction_addrs
 
 ### print all jump gadgets
 
+
 ```python
 import angr, angrop
 
@@ -78,4 +79,60 @@ for jmp in jump_gadgets:
 	print(p.factory.block(jmp.addr).capstone)
 
 import IPython; IPython.embed()
+```
+
+### jmp rops
+
+```c
+// gcc file.c -o a.out
+int multiple_gadgets(int i) {
+  if (i > 0) {
+    i += 3;
+  } else {
+    i += 5;
+  }
+  return i;
+}
+
+int main() {
+  multiple_gadgets(3);
+}
+```
+
+
+```python
+import angr, angrop
+
+p = angr.Project('a.out', load_options={'auto_load_libs': False})
+cfg = p.analyses.CFGFast()
+rop = p.analyses.ROP()
+rop.find_gadgets()
+
+multiple_gadgets = cfg.get_any_node(p.entry).successors[0].successors[0].successors[0]
+multiple_gadgets.block.pp()
+#        multiple_gadgets:
+#401119  push    rbp
+#40111a  mov     rbp, rsp
+#40111d  mov     dword ptr [rbp-0x4], edi
+#401120  cmp     dword ptr [rbp-0x4], init
+#401124  jle     0x40112c
+
+
+multiple_gadgets.successors
+# [<CFGNode multiple_gadgets+0x13 [9]>, <CFGNode multiple_gadgets+0xd [6]>]
+
+# the second successor gadget seems off; why is it having lower addresses after the ret?
+for s in multiple_gadgets.successors:
+    s.block.pp()
+#40112c  add     dword ptr [rbp-0x4], 0x5
+#401130  mov     eax, dword ptr [rbp-0x4]
+#401133  pop     rbp
+#401134  ret
+#
+#401130  mov     eax, dword ptr [rbp-0x4]
+#401133  pop     rbp
+#401134  ret
+#401126  add     dword ptr [rbp-0x4], 0x3
+#40112a  jmp     0x401130
+
 ```
