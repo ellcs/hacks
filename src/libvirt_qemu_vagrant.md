@@ -1,3 +1,10 @@
+### list stored virt-manager connection strings
+
+```bash
+dbus-launch gsettings get org.virt-manager.virt-manager.connections uris
+['qemu+ssh:///root@192.168.122.181:2022/system', 'qemu+ssh://root@192.168.122.196/system?keyfile=/home/ellcs/.ssh/id_rsa', 'qemu:///session']
+```
+
 ### wrap virsh connection in functions
 
 ```bash
