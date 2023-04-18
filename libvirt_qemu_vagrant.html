@@ -143,7 +143,11 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h3 id="wrap-virsh-connection-in-functions"><a class="header" href="#wrap-virsh-connection-in-functions">wrap virsh connection in functions</a></h3>
+                        <h3 id="list-stored-virt-manager-connection-strings"><a class="header" href="#list-stored-virt-manager-connection-strings">list stored virt-manager connection strings</a></h3>
+<pre><code class="language-bash">dbus-launch gsettings get org.virt-manager.virt-manager.connections uris
+['qemu+ssh:///root@192.168.122.181:2022/system', 'qemu+ssh://root@192.168.122.196/system?keyfile=/home/ellcs/.ssh/id_rsa', 'qemu:///session']
+</code></pre>
+<h3 id="wrap-virsh-connection-in-functions"><a class="header" href="#wrap-virsh-connection-in-functions">wrap virsh connection in functions</a></h3>
 <pre><code class="language-bash">function virsh_libvirthost() { 
   virsh -c qemu+ssh://root@192.168.122.105/system $@
 }
