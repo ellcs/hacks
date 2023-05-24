@@ -1,3 +1,32 @@
+### fix `winrm` timeout with windows vagrant box
+
+It looks as follows:
+
+```
+==> default: Waiting for machine to boot. This may take a few minutes...
+    default: WinRM address: 192.168.122.42:5985
+    default: WinRM username: vagrant
+    default: WinRM execution_time_limit: PT2H
+    default: WinRM transport: negotiate
+
+==> default: Removing domain...
+==> default: Deleting the machine folder
+An error occurred executing a remote WinRM command.
+
+Shell: Cmd
+Command: hostname
+Message: Digest initialization failed: initialization error
+```
+
+You might solve this by using `winssh`, if available:
+
+```
+  # ...
+  config.vm.communicator = "winssh"
+  config.winssh.insert_key = false
+  # ...
+```
+
 ### list stored virt-manager connection strings
 
 ```bash
