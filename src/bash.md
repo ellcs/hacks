@@ -61,6 +61,16 @@ gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=out.pdf -dBATCH candidate_?.pdf
 gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=69 -dLastPage=138 -sOutputFile=extracted.pdf input.pdf
 ```
 
+### ereader: epub to pdf
+Optimized for ereaders. Makes text streams smaller. 
+
+```
+# convert the epub to pdf with calibre
+ebook-convert in.epub in.pdf
+# rewrite the pdf, to reduce the risk of to big text-buffers
+gs -o out.pdf -sDEVICE=pdfwrite -dPDFSETTINGS=/ebook in.pdf
+```
+
 ### android full backup
 
 ```bash
