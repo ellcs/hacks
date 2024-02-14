@@ -3,7 +3,7 @@
 
 ### arrays
 ```python
-{{#include z3py/array.py}}
+{{#include z3py/z3arrays.py}}
 ```
 
 ### eight queens problem
