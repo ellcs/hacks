@@ -145,7 +145,20 @@
                     <main>
                         <h1 id="z3py"><a class="header" href="#z3py">z3py</a></h1>
 <h3 id="arrays"><a class="header" href="#arrays">arrays</a></h3>
-<pre><code class="language-python">{{#include z3py/z3array.py}}
+<pre><code class="language-python">from z3 import *
+s = Solver()
+x = Int('x')
+y = Int('y')
+A = Array('A', IntSort(), IntSort())
+B = Array('B', IntSort(), IntSort())
+
+s.add(x &gt; 100)
+s.add(A[0] == 5)
+s.add(A[x] == x, Store(A, x, y) == A)
+s.add(B == A)
+
+print(s.check())
+print(s.model())
 </code></pre>
 <h3 id="eight-queens-problem"><a class="header" href="#eight-queens-problem">eight queens problem</a></h3>
 <pre><code class="language-python"># The eight queens puzzle is the problem of placing eight chess queens on an
