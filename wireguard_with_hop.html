@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>./ruby.md</title>
+        <title>./wireguard_with_hop.md</title>
                 
 
         <!-- Custom HTML head -->
@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="arch.html">./arch.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="libvirt_qemu_vagrant.html">./libvirt_qemu_vagrant.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html" class="active">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="wireguard.html">./wireguard.md</a></li><li class="chapter-item expanded affix "><a href="wireguard_with_hop.html">./wireguard_with_hop.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="arch.html">./arch.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="libvirt_qemu_vagrant.html">./libvirt_qemu_vagrant.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="wireguard.html">./wireguard.md</a></li><li class="chapter-item expanded affix "><a href="wireguard_with_hop.html" class="active">./wireguard_with_hop.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -143,127 +143,91 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h3 id="ruby---list-tty-status-for-standard-io"><a class="header" href="#ruby---list-tty-status-for-standard-io">ruby - list tty status for standard IO</a></h3>
-<pre><code class="language-bash">function is_tty() {
-  ruby -e 'puts((0..2).map { |n| File.for_fd(n).tty? }.join(&quot; &quot;))'
-}
+                        <h1 id="route-all-traffic-through-a-hop-node"><a class="header" href="#route-all-traffic-through-a-hop-node">Route all traffic through a hop node</a></h1>
+<p>Sometimes you want to route all your traffic through a wireguard gateway. But,
+you also want to add a node to hop over. So in total there are three systems:</p>
+<ul>
+<li>A <code>peer</code> which routes all traffic over the <code>hop</code> to the <code>gateway</code>.</li>
+<li>A <code>hop</code> node which is accessible to both systems, it's accessible for both
+systems. </li>
+<li>A <code>gateway</code> which is behind a NATed network and therefore can not be
+accessed directly through the net. The <code>gateway</code> has to keep the connection
+alive to the <code>hop</code>, because the NATed gateway might prohibit the <code>hop</code> to send
+packages after a while.</li>
+</ul>
+<p>All these nodes have their own wireguard configs, so their own private key and
+public key.</p>
+<p>For the hop node, make sure to use policy based routing. This can be done mixed
+with <code>PreUp</code> hooks triggering ip rules which are the policies. Also, a <code>Table</code>
+can be specified for the interface. The routing rules are specified through
+the <code>Peer</code> sections. So all traffic from the wireguard interface is routed only
+on that interface. The configuration file for the <code>hop</code> looks as follows:</p>
+<pre><code>[Interface]
+Address = 10.0.0.1/24
+ListenPort = 51820
+PrivateKey = &lt;hop privkey&gt;
+Table = 123
+PreUp = sysctl -w net.ipv4.ip_forward=1
+PreUp = ip rule add iif %i table 123 priority 456
+PostDown = ip rule del iif %i table 123 priority 456
 
-$ echo &quot;stdin false&quot; | is_tty
-$ is_tty | cat - 
+# a simple peer
+[Peer]
+PublicKey = &lt;peer pubkey&gt;
+AllowedIPs = 10.0.0.3/32
 
+# gateway, all traffic of the 123 table is routed to this.
+[Peer]
+PublicKey = &lt;gateway pubkey&gt;
+AllowedIPs = 0.0.0.0/0
 </code></pre>
-<h3 id="ruby---list-all-instances-of-class"><a class="header" href="#ruby---list-all-instances-of-class">ruby - list all instances of class</a></h3>
-<pre><code class="language-ruby">ObjectSpace.each_object(Human) { |humanoid| }
+<p>After setting up the <code>hop</code> node, you can proceed with the <code>gateway</code> node. The
+<code>gateway</code> node also uses hooks for additional system configuration. But instead
+of adjusting rules for policy based routing, network packages are NAT'ed using
+<code>iptables</code>. The keyword here is <code>maqsquerade</code>. Additionally, the <code>gateway</code>
+itself might sit behind a NAT (e.g. a home router). To work around that NAT and
+therefore allow the <code>hop</code> node to initate communication to the <code>gateway</code> node,
+a persistent keep alive is configured. You might have to adjust the output
+interface (<code>wlan0</code>) in the masquerading to your suited output inteface (e.g.
+<code>eth0</code> or <code>en1</code>).</p>
+<pre><code>[Interface]
+Address = 10.0.0.2/24
+ListenPort = 51820
+PrivateKey = &lt;gateway privkey&gt;
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o wlan0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o wlan0 -j MASQUERADE
+
+[Peer]
+PublicKey = &lt;hop pub&gt;
+AllowedIPs = 10.0.0.1/32, 10.0.0.3/32
+Endpoint = 23.88.55.78:51820
+PersistentKeepalive = 25
 </code></pre>
-<h3 id="ruby---highorder-methods-with-arguments"><a class="header" href="#ruby---highorder-methods-with-arguments">ruby - highorder methods with arguments</a></h3>
-<pre><code class="language-ruby">def with_args(sym, *args)
-  Proc.new do |item|
-    item.send(sym, *args)
-  end
-end
+<p>As the last configuration file, the peer follows. The endpoint specification of
+<code>0.0.0.0/0</code>, causes all traffic to be routed to that client. An DNS server must be
+specified.</p>
+<pre><code>[Interface]
+Address = 10.0.0.3/24
+ListenPort = 51820
+PrivateKey = &lt;peer privkey&gt;
+# adjust the dns server to the local dns server onsite
+DNS = 1.1.1.1
 
-
-[1,2,3,4].map(&amp;with_args(:+, 2))
-# =&gt; [3, 4, 5, 6]
-</code></pre>
-<h3 id="ruby-base64-grepper"><a class="header" href="#ruby-base64-grepper">ruby base64 grepper</a></h3>
-<pre><code class="language-ruby">BASE64_CHARS = &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/&quot;.freeze
-
-# +-------------------------------------------+
-# |                                           |
-# |            I        II        III         |
-# | ascii |876543_21|8765_4321|87_654321|     |
-# | b64   |654321|65_4321|6543_21|654321|     |
-# |          a       b       c      d         |
-# |                                           |
-# +-------------------------------------------+
-# ASCII-Art as png: https://web.archive.org/web/20210409165509/https://upload.wikimedia.org/wikipedia/commons/7/70/Base64-de.png
-#
-# Five cases exist:
-#  1)  I, II and III are existent   -&gt; given: a,b,c,d
-#  2)  I and II are existent        -&gt; given: a,b      partially: c
-#  3)  Only I is existent           -&gt; given: a        partially: b
-#  4)  II and III are existent      -&gt; given: c, d     partially: b
-#  5)  Only III is existent         -&gt; given: d        partially: c
-#
-# In every case we have either full or partiall information about c xor b. This
-# means, we can calculate them. 
-#
-# Source has been stolen and modified from:
-#
-# https://web.archive.org/web/20210409165718/https://en.wikibooks.org/wiki/Algorithm_Implementation/Miscellaneous/Base64#Ruby
-def encode_regex(str, remove_equals=true)
-  candidates = [str.bytes, [nil] + str.bytes, [nil, nil] + str.bytes] 
-  candidates.map! do |candidate|
-    candidate.each_slice(3).map do |buf|
-      symbolic = buf 
-      while symbolic.length &lt; 3; symbolic &lt;&lt; nil; end
-
-      # replace in both directions
-      buf = symbolic.map { |b| ((b.nil?) &amp;&amp; 0) || b }
-
-      # basic 3char (8bit) to 4chars (6bit)
-      group24 = (buf[0] &lt;&lt; 16) | (buf[1] &lt;&lt; 8) | buf[2] # current 3 bytes as a 24 bit value
-      encoded = ''
-      encoded &lt;&lt; BASE64_CHARS[(group24 &gt;&gt; 18) &amp; 0x3f] # read the 24 bit value 6 bits at a time
-      encoded &lt;&lt; BASE64_CHARS[(group24 &gt;&gt; 12) &amp; 0x3f]
-      encoded &lt;&lt; BASE64_CHARS[(group24 &gt;&gt; 6) &amp; 0x3f]
-      encoded &lt;&lt; BASE64_CHARS[(group24 &gt;&gt; 0) &amp; 0x3f]
-
-      if symbolic[0].nil? &amp;&amp; symbolic[1].nil?
-        encoded[0] = '='
-        encoded[1] = '=' 
-        # encoded[2] 4bits..
-        pos = BASE64_CHARS.index(encoded[2])
-        possibilities = (4**2).times.map.with_index(0x3f - 16) { |i| BASE64_CHARS[(pos ^ i)] }
-        encoded[2] = sprintf(&quot;(%s)&quot;, possibilities.join(&quot;|&quot;))
-      elsif symbolic[0].nil?
-        encoded[0] = '='
-        # encoded[1] first two bits...
-        pos = BASE64_CHARS.index(encoded[1])
-        possibilities = (2**2).times.map.with_index(0) { |i| BASE64_CHARS[(pos ^ (i &lt;&lt; 4))] }
-        encoded[1] = sprintf(&quot;(%s)&quot;, possibilities.join(&quot;|&quot;))
-      end
-
-      if symbolic[1].nil? &amp;&amp; symbolic[2].nil?
-        # encoded[1] 4bit...
-        encoded[2] = '=' 
-        encoded[3] = '='
-        pos = BASE64_CHARS.index(encoded[1])
-        possibilities = (4**2).times.map.with_index(0x00) { |i| BASE64_CHARS[(pos ^ i)] }
-        encoded[1] = sprintf(&quot;(%s)&quot;, possibilities.join(&quot;|&quot;))
-      elsif symbolic[2].nil?
-        # encoded[3] last two bits...
-        # four bits correct; two bits incorrect: 2**2
-        encoded[3] = '='
-        pos = BASE64_CHARS.index(encoded[2])
-        possibilities = (2**2).times.map.with_index(0x00) { |i| BASE64_CHARS[(pos ^ i)] }
-        encoded[2] = sprintf(&quot;(%s)&quot;, possibilities.join(&quot;|&quot;))
-      end
-      encoded
-    end.join
-  end
-  candidates = &quot;(#{candidates.join(&quot;|&quot;)})&quot;
-  candidates = candidates.tr(&quot;=&quot;, &quot;&quot;) if remove_equals
-  candidates
-end
-</code></pre>
-<h3 id="find-all-ruby-classes"><a class="header" href="#find-all-ruby-classes">find all ruby classes</a></h3>
-<pre><code class="language-bash">egrep -Hrn &quot;^class (\S)+ &quot; lib | sed -E 's/.+\/.*:.*:(\s)*//' | awk '{print $2}' | grep -vE &quot;^$&quot;
-
-# count the class occurences
-for klass in $(egrep -Hrn &quot;^class (\S)+ &quot; lib | sed -E 's/.+\/.*:.*:(\s)*//' | awk '{print $2}' | grep -vE &quot;^$&quot;); do amount=$(grep -Hrn &quot;$klass&quot; . | wc -l); echo &quot;$klass $amount&quot;; done
+[Peer]
+PublicKey = &lt;hop pubkey&gt;
+AllowedIPs = 0.0.0.0/0, ::/0
+Endpoint = 23.88.55.78:51820
 </code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                                                    <a rel="prev" href="pwn.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                                    <a rel="prev" href="wireguard.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
-                                                    <a rel="next" href="rust.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                                    <a rel="next" href="z3py.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -273,11 +237,11 @@ for klass in $(egrep -Hrn &quot;^class (\S)+ &quot; lib | sed -E 's/.+\/.*:.*:(\
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                                    <a rel="prev" href="pwn.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                    <a rel="prev" href="wireguard.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
-                                    <a rel="next" href="rust.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                    <a rel="next" href="z3py.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                             </nav>

