@@ -614,7 +614,27 @@ joern&gt; def source = cpg.method.name(&quot;atoi&quot;).methodReturn
 joern&gt; sink.reachableBy(source).p
 joern&gt; sink.reachableByFlows(source).p
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h3 id="fix-winrm-timeout-with-windows-vagrant-box"><a class="header" href="#fix-winrm-timeout-with-windows-vagrant-box">fix <code>winrm</code> timeout with windows vagrant box</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h3 id="vagrant-start-script"><a class="header" href="#vagrant-start-script">vagrant start script</a></h3>
+<pre><code>Vagrant.configure(&quot;2&quot;) do |config|
+  config.vm.box = &quot;kali-linux-rolling&quot;
+  config.vm.hostname = File.split(Dir.pwd).last
+
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.uri = 'qemu:///session'
+    libvirt.cpus = 6
+    libvirt.memory = 1024 * 8
+    libvirt.cmd_line = &quot;&quot;
+    libvirt.nested = true
+    libvirt.video_type = 'virtio'
+  end
+
+  config.nfs.verify_installed = false
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+
+  #config.vm.provision &quot;shell&quot;, inline: &quot;apt update; apt install pwntools; git clone https://github.com/pwndbg/pwndbg; cd pwndbg; ./setup.sh&quot;
+end
+</code></pre>
+<h3 id="fix-winrm-timeout-with-windows-vagrant-box"><a class="header" href="#fix-winrm-timeout-with-windows-vagrant-box">fix <code>winrm</code> timeout with windows vagrant box</a></h3>
 <p>It looks as follows:</p>
 <pre><code>==&gt; default: Waiting for machine to boot. This may take a few minutes...
     default: WinRM address: 192.168.122.42:5985
