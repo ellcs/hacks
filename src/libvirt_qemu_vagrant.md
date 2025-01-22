@@ -1,3 +1,26 @@
+### vagrant start script
+
+```
+Vagrant.configure("2") do |config|
+  config.vm.box = "kali-linux-rolling"
+  config.vm.hostname = File.split(Dir.pwd).last
+
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.uri = 'qemu:///session'
+    libvirt.cpus = 6
+    libvirt.memory = 1024 * 8
+    libvirt.cmd_line = ""
+    libvirt.nested = true
+    libvirt.video_type = 'virtio'
+  end
+
+  config.nfs.verify_installed = false
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+
+  #config.vm.provision "shell", inline: "apt update; apt install pwntools; git clone https://github.com/pwndbg/pwndbg; cd pwndbg; ./setup.sh"
+end
+```
+
 ### fix `winrm` timeout with windows vagrant box
 
 It looks as follows:
