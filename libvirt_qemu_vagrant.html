@@ -143,7 +143,17 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h3 id="vagrant-start-script"><a class="header" href="#vagrant-start-script">vagrant start script</a></h3>
+                        <h3 id="libvirt-allow-copy-paste-on-linux"><a class="header" href="#libvirt-allow-copy-paste-on-linux">libvirt allow copy-paste on linux</a></h3>
+<p>Add this to your domain, power it off and start it again.</p>
+<pre><code>&lt;devices&gt;
+    &lt;controller type='virtio-serial' index='0'/&gt;
+    &lt;channel type='spicevmc'&gt;
+        &lt;target type='virtio' name='com.redhat.spice.0'/&gt;
+    &lt;/channel&gt;
+&lt;/devices&gt;
+</code></pre>
+<p>Also install <code>spice-vdagent</code> and enable it via systemd.</p>
+<h3 id="vagrant-start-script"><a class="header" href="#vagrant-start-script">vagrant start script</a></h3>
 <pre><code>Vagrant.configure(&quot;2&quot;) do |config|
   config.vm.box = &quot;kali-linux-rolling&quot;
   config.vm.hostname = File.split(Dir.pwd).last
