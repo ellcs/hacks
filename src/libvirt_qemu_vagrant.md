@@ -1,3 +1,18 @@
+### libvirt allow copy-paste on linux
+
+Add this to your domain, power it off and start it again.
+
+```
+<devices>
+    <controller type='virtio-serial' index='0'/>
+    <channel type='spicevmc'>
+        <target type='virtio' name='com.redhat.spice.0'/>
+    </channel>
+</devices>
+```
+
+Also install `spice-vdagent` and enable it via systemd.
+
 ### vagrant start script
 
 ```
