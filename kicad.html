@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>./bash.md</title>
+        <title>./kicad.md</title>
                 
 
         <!-- Custom HTML head -->
@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="android.html">./android.md</a></li><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="arch.html">./arch.md</a></li><li class="chapter-item expanded affix "><a href="bash.html" class="active">./bash.md</a></li><li class="chapter-item expanded affix "><a href="firewall.html">./firewall.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="kicad.html">./kicad.md</a></li><li class="chapter-item expanded affix "><a href="libvirt_qemu_vagrant.html">./libvirt_qemu_vagrant.md</a></li><li class="chapter-item expanded affix "><a href="msfvenom.html">./msfvenom.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="windows.html">./windows.md</a></li><li class="chapter-item expanded affix "><a href="wireguard.html">./wireguard.md</a></li><li class="chapter-item expanded affix "><a href="wireguard_with_hop.html">./wireguard_with_hop.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="android.html">./android.md</a></li><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="arch.html">./arch.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="firewall.html">./firewall.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="kicad.html" class="active">./kicad.md</a></li><li class="chapter-item expanded affix "><a href="libvirt_qemu_vagrant.html">./libvirt_qemu_vagrant.md</a></li><li class="chapter-item expanded affix "><a href="msfvenom.html">./msfvenom.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="windows.html">./windows.md</a></li><li class="chapter-item expanded affix "><a href="wireguard.html">./wireguard.md</a></li><li class="chapter-item expanded affix "><a href="wireguard_with_hop.html">./wireguard_with_hop.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -143,75 +143,32 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h3 id="bash-function-to-archive-a-page-with-waybackmachine"><a class="header" href="#bash-function-to-archive-a-page-with-waybackmachine">bash function to archive a page with waybackmachine</a></h3>
-<pre><code class="language-bash"># https://web.archive.org/web/20210323214943/https://gist.github.com/atomotic/721aefe8c72ac095cb6e
-function ia-save() {
-  curl -s -I &quot;https://web.archive.org/save/$1&quot; | \
-  egrep '^location:' | \
-  awk '{ print $2 }';
-}
-
-# Usage:
-ia-save 'https://gist.github.com/atomotic/721aefe8c72ac095cb6e'
-</code></pre>
-<h3 id="default-parameters-in-bash"><a class="header" href="#default-parameters-in-bash">default parameters in bash</a></h3>
-<pre><code class="language-bash"># sets x to &quot;/abc&quot; if x is not set
-x=${x:-/abc}
-</code></pre>
-<h3 id="find-libreoffice-files-containing-a-string"><a class="header" href="#find-libreoffice-files-containing-a-string">find libreoffice files containing a string</a></h3>
-<p>This helps you to search for a libreoffice document containing a certian string.
-Add it to your <code>~.bashrc</code>. Start a terminal within a certian folder you want to
-search in and start searching! Make sure you installed <code>unzip</code>.</p>
-<pre><code class="language-bash"># Example usages: 
-# 
-#    find_libre horseshoes
-#
-#    find_libre &quot;horseshoes with spaces&quot; 
-#
-#    find_libre &quot;horseshoes somewhere else&quot;  &quot;/home/user&quot;
-#
-function libre_find() {
-  which zipgrep 1&gt;/dev/null || { echo &quot;Please install zipgrep&quot;; exit 1; }
-  local search_term=&quot;$1&quot;
-  local search_path=${2:-$(pwd)}
-  find &quot;$search_path&quot; -exec zipgrep -iq &quot;$search_term&quot; {} 2&gt;/dev/null \; -print
-}
-</code></pre>
-<h3 id="ghostscript---merge-pdf-files"><a class="header" href="#ghostscript---merge-pdf-files">ghostscript - merge pdf files</a></h3>
-<pre><code class="language-bash"># combine 1.pdf and 2.pdf to out.pdf
-gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=out.pdf -dBATCH 1.pdf 2.pdf
-
-</code></pre>
-<pre><code># combine matching files to 'candidate_?.pdf', while '?' represents a single char
-gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=out.pdf -dBATCH candidate_?.pdf
-</code></pre>
-<h3 id="ghostscript---extract-pages-from-pdf"><a class="header" href="#ghostscript---extract-pages-from-pdf">ghostscript - extract pages from pdf</a></h3>
-<pre><code># extract from pages 69 till 138, including both pages
-gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=69 -dLastPage=138 -sOutputFile=extracted.pdf input.pdf
-</code></pre>
-<h3 id="ereader-epub-to-pdf"><a class="header" href="#ereader-epub-to-pdf">ereader: epub to pdf</a></h3>
-<p>Optimized for ereaders. Makes text streams smaller. </p>
-<pre><code># convert the epub to pdf with calibre
-ebook-convert in.epub in.pdf
-# rewrite the pdf, to reduce the risk of to big text-buffers
-gs -o out.pdf -sDEVICE=pdfwrite -dPDFSETTINGS=/ebook in.pdf
-</code></pre>
-<h3 id="android-full-backup"><a class="header" href="#android-full-backup">android full backup</a></h3>
-<pre><code class="language-bash">adb backup -apk -obb -shared -all -system -f fullbackup$(date | tr ' ' '_').ab
-</code></pre>
-<h1 id="borg-prune"><a class="header" href="#borg-prune">borg prune</a></h1>
-<pre><code class="language-bash">borg prune -v --list --keep-daily=7 --keep-weekly=4 --keep-monthly=-1 /path/to/borg_repo
-</code></pre>
+                        <h1 id="kicad"><a class="header" href="#kicad">kicad</a></h1>
+<h3 id="basic-workflow"><a class="header" href="#basic-workflow">basic workflow</a></h3>
+<ol>
+<li>Create a schematic and connect them.</li>
+<li>Run a ECR check. Fix the problems.</li>
+<li>Assign footprints to parts.</li>
+<li>Go to PCB editor.</li>
+<li>Create a board as a rectangle.</li>
+<li>Update board based on schematics (f8).</li>
+<li>Add wires. Check design rules.</li>
+<li>Generate Gerber files out of the pcb.</li>
+</ol>
+<h3 id="print-a-pcb"><a class="header" href="#print-a-pcb">print a pcb</a></h3>
+<p>Export a gerber and upload it to:</p>
+<p>https://aisler.net
+jlcpcb.com/</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                                                    <a rel="prev" href="arch.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                                    <a rel="prev" href="joern_badstrlen.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
-                                                    <a rel="next" href="firewall.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                                    <a rel="next" href="libvirt_qemu_vagrant.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -221,11 +178,11 @@ gs -o out.pdf -sDEVICE=pdfwrite -dPDFSETTINGS=/ebook in.pdf
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                                    <a rel="prev" href="arch.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                    <a rel="prev" href="joern_badstrlen.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
-                                    <a rel="next" href="firewall.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                    <a rel="next" href="libvirt_qemu_vagrant.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                             </nav>

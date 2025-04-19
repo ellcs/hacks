@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="android.html">./android.md</a></li><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="arch.html">./arch.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="firewall.html">./firewall.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="libvirt_qemu_vagrant.html">./libvirt_qemu_vagrant.md</a></li><li class="chapter-item expanded affix "><a href="msfvenom.html">./msfvenom.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="windows.html">./windows.md</a></li><li class="chapter-item expanded affix "><a href="wireguard.html">./wireguard.md</a></li><li class="chapter-item expanded affix "><a href="wireguard_with_hop.html">./wireguard_with_hop.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="android.html">./android.md</a></li><li class="chapter-item expanded affix "><a href="angr.html">./angr.md</a></li><li class="chapter-item expanded affix "><a href="arch.html">./arch.md</a></li><li class="chapter-item expanded affix "><a href="bash.html">./bash.md</a></li><li class="chapter-item expanded affix "><a href="firewall.html">./firewall.md</a></li><li class="chapter-item expanded affix "><a href="git.html">./git.md</a></li><li class="chapter-item expanded affix "><a href="joern_badstrlen.html">./joern_badstrlen.md</a></li><li class="chapter-item expanded affix "><a href="kicad.html">./kicad.md</a></li><li class="chapter-item expanded affix "><a href="libvirt_qemu_vagrant.html">./libvirt_qemu_vagrant.md</a></li><li class="chapter-item expanded affix "><a href="msfvenom.html">./msfvenom.md</a></li><li class="chapter-item expanded affix "><a href="old_stuff.html">./old_stuff.md</a></li><li class="chapter-item expanded affix "><a href="podman.html">./podman.md</a></li><li class="chapter-item expanded affix "><a href="pwn.html">./pwn.md</a></li><li class="chapter-item expanded affix "><a href="ruby.html">./ruby.md</a></li><li class="chapter-item expanded affix "><a href="rust.html">./rust.md</a></li><li class="chapter-item expanded affix "><a href="ssh.html">./ssh.md</a></li><li class="chapter-item expanded affix "><a href="windows.html">./windows.md</a></li><li class="chapter-item expanded affix "><a href="wireguard.html">./wireguard.md</a></li><li class="chapter-item expanded affix "><a href="wireguard_with_hop.html">./wireguard_with_hop.md</a></li><li class="chapter-item expanded affix "><a href="z3py.html">./z3py.md</a></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -621,6 +621,22 @@ joern&gt; def source = cpg.method.name(&quot;atoi&quot;).methodReturn
 joern&gt; sink.reachableBy(source).p
 joern&gt; sink.reachableByFlows(source).p
 </code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="kicad"><a class="header" href="#kicad">kicad</a></h1>
+<h3 id="basic-workflow"><a class="header" href="#basic-workflow">basic workflow</a></h3>
+<ol>
+<li>Create a schematic and connect them.</li>
+<li>Run a ECR check. Fix the problems.</li>
+<li>Assign footprints to parts.</li>
+<li>Go to PCB editor.</li>
+<li>Create a board as a rectangle.</li>
+<li>Update board based on schematics (f8).</li>
+<li>Add wires. Check design rules.</li>
+<li>Generate Gerber files out of the pcb.</li>
+</ol>
+<h3 id="print-a-pcb"><a class="header" href="#print-a-pcb">print a pcb</a></h3>
+<p>Export a gerber and upload it to:</p>
+<p>https://aisler.net
+jlcpcb.com/</p>
 <div style="break-before: page; page-break-before: always;"></div><h3 id="libvirt-allow-copy-paste-on-linux"><a class="header" href="#libvirt-allow-copy-paste-on-linux">libvirt allow copy-paste on linux</a></h3>
 <p>Add this to your domain, power it off and start it again.</p>
 <pre><code>&lt;devices&gt;
